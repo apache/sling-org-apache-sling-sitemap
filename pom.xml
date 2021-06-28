@@ -56,10 +56,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.sling</groupId>
@@ -70,10 +66,13 @@
                 <artifactId>apache-rat-plugin</artifactId>
                 <configuration>
                     <excludes combine.children="append">
-                        <!-- Obtained from http://sitemaps.org/, public domain -->
+                        <!-- Obtained from http://sitemaps.org/ -->
                         <exclude>src/test/resources/sitemap-0.9.xsd</exclude>
-                        <!-- Obtained from http://sitemaps.org/, public domain -->
+                        <!-- Obtained from http://sitemaps.org/ -->
                         <exclude>src/test/resources/siteindex-0.9.xsd</exclude>
+                        <!-- Obtained from http://w3.org/ -->
+                        <exclude>src/test/resources/xhtml1-strict.xsd</exclude>
+                        <exclude>src/test/resources/xml.xsd</exclude>
                     </excludes>
                 </configuration>
             </plugin>

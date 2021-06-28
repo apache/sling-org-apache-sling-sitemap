@@ -24,6 +24,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -35,27 +36,34 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AbstractBuilderTest {
 
+    private static final URL XML_XSD = AbstractBuilderTest.class.getClassLoader().getResource("xml.xsd");
+    private static final URL XHTML_XSD = AbstractBuilderTest.class.getClassLoader().getResource("xhtml1-strict.xsd");
     private static final URL SITEMAP_XSD = AbstractBuilderTest.class.getClassLoader().getResource("sitemap-0.9.xsd");
     private static final URL SITEMAP_INDEX_XSD = AbstractBuilderTest.class.getClassLoader().getResource("siteindex-0.9.xsd");
 
     protected void assertSitemap(String expected, String given) {
-        assertEqualsAndValid(expected, given, SITEMAP_XSD);
+        assertEqualsAndValid(expected, given, XML_XSD, XHTML_XSD, SITEMAP_XSD);
     }
 
     protected void assertSitemapIndex(String expected, String given) {
         assertEqualsAndValid(expected, given, SITEMAP_INDEX_XSD);
     }
 
-    private void assertEqualsAndValid(String expected, String given, URL schemaUrl) {
+    private void assertEqualsAndValid(String expected, String given, URL... schemaUrl) {
         assertEquals(expected, given);
-        assertValid(schemaUrl, expected);
-        assertValid(schemaUrl, given);
+        assertValid(expected, schemaUrl);
+        assertValid(given, schemaUrl);
     }
 
-    private void assertValid(URL schemaUrl, String xml) {
+    private void assertValid(String xml, URL... schemaUrls) {
         try {
+            assert schemaUrls.length > 0;
+            Source[] sources = new Source[schemaUrls.length];
+            for (int i = 0; i < schemaUrls.length; i++) {
+                sources[i] = new StreamSource(schemaUrls[i].openStream());
+            }
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = factory.newSchema(schemaUrl);
+            Schema schema = factory.newSchema(sources);
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))));
         } catch (IOException | SAXException ex) {
