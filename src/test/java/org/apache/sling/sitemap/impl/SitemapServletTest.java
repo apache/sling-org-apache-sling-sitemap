@@ -24,8 +24,8 @@ import org.apache.sling.event.jobs.JobManager;
 import org.apache.sling.serviceusermapping.ServiceUserMapped;
 import org.apache.sling.sitemap.SitemapService;
 import org.apache.sling.sitemap.TestResourceTreeSitemapGenerator;
+import org.apache.sling.sitemap.impl.builder.AbstractBuilderTest;
 import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
-import org.apache.sling.sitemap.impl.builder.SitemapImplTest;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
 import org.apache.sling.testing.mock.jcr.MockJcr;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -58,7 +58,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
 public class SitemapServletTest {
 
-    public final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
+    final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
 
     private final SitemapServlet subject = new SitemapServlet();
     private final SitemapStorage storage = spy(new SitemapStorage());
@@ -87,14 +87,14 @@ public class SitemapServletTest {
     private final String pointInTimeAtUtc;
     private Resource root;
 
-    public SitemapServletTest() {
+    {
         pointInTime = Calendar.getInstance();
         pointInTime.setTimeInMillis(123456789L);
         pointInTimeAtUtc = DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(pointInTime.toInstant().atOffset(ZoneOffset.UTC));
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         root = context.create().resource("/content/site/de");
         context.create().resource("/content/site/de/jcr:content", Collections.singletonMap(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
@@ -126,7 +126,7 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testBadRequestForResourcesThatAreNotSitemapRoot() throws ServletException, IOException {
+    void testBadRequestForResourcesThatAreNotSitemapRoot() throws ServletException, IOException {
         // given
         Resource notATopLevelRoot = context.create().resource("/content/site/en");
 
@@ -141,7 +141,7 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testBadRequestForInvalidSelectors() throws ServletException, IOException {
+    void testBadRequestForInvalidSelectors() throws ServletException, IOException {
         // given
         MockSlingHttpServletResponse response = context.response();
 
@@ -157,7 +157,7 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testSitemapIndexContainsOnlySitemapsFromStorage() throws IOException, ServletException {
+    void testSitemapIndexContainsOnlySitemapsFromStorage() throws IOException, ServletException {
         // given
         storage.writeSitemap(root, SitemapService.DEFAULT_SITEMAP_NAME, new ByteArrayInputStream(new byte[0]), 1, 0, 0);
         storage.writeSitemap(root, "news", new ByteArrayInputStream(new byte[0]), 1, 0, 0);
@@ -173,7 +173,7 @@ public class SitemapServletTest {
         assertEquals("application/xml;charset=utf-8", response.getContentType());
         assertEquals("utf-8", response.getCharacterEncoding());
         assertEquals(
-                SitemapImplTest.XML_HEADER + "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<sitemap><loc>/site/de.sitemap.xml</loc><lastmod>" + pointInTimeAtUtc + "</lastmod></sitemap>"
                         + "<sitemap><loc>/site/de.sitemap.news-sitemap.xml</loc><lastmod>" + pointInTimeAtUtc + "</lastmod></sitemap>"
                         + "</sitemapindex>",
@@ -182,7 +182,7 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testSitemapIndexContainsMultiFileSitemaps() throws IOException, ServletException {
+    void testSitemapIndexContainsMultiFileSitemaps() throws IOException, ServletException {
         // given
         storage.writeSitemap(root, SitemapService.DEFAULT_SITEMAP_NAME, new ByteArrayInputStream(new byte[0]), 1, 0, 0);
         storage.writeSitemap(root, SitemapService.DEFAULT_SITEMAP_NAME, new ByteArrayInputStream(new byte[0]), 2, 0, 0);
@@ -199,7 +199,7 @@ public class SitemapServletTest {
         assertEquals("application/xml;charset=utf-8", response.getContentType());
         assertEquals("utf-8", response.getCharacterEncoding());
         assertEquals(
-                SitemapImplTest.XML_HEADER + "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<sitemap><loc>/site/de.sitemap.xml</loc><lastmod>" + pointInTimeAtUtc + "</lastmod></sitemap>"
                         + "<sitemap><loc>/site/de.sitemap.sitemap-2.xml</loc><lastmod>" + pointInTimeAtUtc + "</lastmod></sitemap>"
                         + "<sitemap><loc>/site/de.sitemap.sitemap-3.xml</loc><lastmod>" + pointInTimeAtUtc + "</lastmod></sitemap>"
@@ -209,7 +209,7 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testSitemapIndexContainsOnDemandSitemapsAndSitemapsFromStorage() throws ServletException, IOException {
+    void testSitemapIndexContainsOnDemandSitemapsAndSitemapsFromStorage() throws ServletException, IOException {
         // given
         storage.writeSitemap(root, SitemapService.DEFAULT_SITEMAP_NAME, new ByteArrayInputStream(new byte[0]), 1, 0, 0);
 
@@ -225,7 +225,7 @@ public class SitemapServletTest {
         assertEquals("application/xml;charset=utf-8", response.getContentType());
         assertEquals("utf-8", response.getCharacterEncoding());
         assertEquals(
-                SitemapImplTest.XML_HEADER + "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<sitemap><loc>/site/de.sitemap.news-sitemap.xml</loc></sitemap>"
                         + "<sitemap><loc>/site/de.sitemap.xml</loc><lastmod>" + pointInTimeAtUtc + "</lastmod></sitemap>"
                         + "</sitemapindex>",
@@ -234,7 +234,7 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testSitemapServedOnDemand() throws ServletException, IOException {
+    void testSitemapServedOnDemand() throws ServletException, IOException {
         // given
         MockSlingHttpServletRequest request = newSitemapReq("news-sitemap", root);
         MockSlingHttpServletResponse response = context.response();
@@ -248,7 +248,7 @@ public class SitemapServletTest {
         assertEquals("application/xml;charset=utf-8", response.getContentType());
         assertEquals("utf-8", response.getCharacterEncoding());
         assertEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>/content/site/de</loc></url>"
                         + "</urlset>",
                 response.getOutputAsString()
@@ -256,9 +256,9 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testSitemapServedFromStorage() throws ServletException, IOException {
+    void testSitemapServedFromStorage() throws ServletException, IOException {
         // given
-        String expectedOutcome = SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+        String expectedOutcome = AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                 + "<url><loc>/content/site/en</loc></url>"
                 + "</urlset>";
         byte[] expectedOutcomeBytes = expectedOutcome.getBytes(StandardCharsets.UTF_8);
@@ -283,9 +283,9 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testMultiFileSitemapServedFromStorage() throws ServletException, IOException {
+    void testMultiFileSitemapServedFromStorage() throws ServletException, IOException {
         // given
-        String expectedOutcome = SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+        String expectedOutcome = AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                 + "<url><loc>/content/site/en</loc></url>"
                 + "</urlset>";
         byte[] expectedOutcomeBytes = expectedOutcome.getBytes(StandardCharsets.UTF_8);
@@ -310,7 +310,7 @@ public class SitemapServletTest {
     }
 
     @Test
-    public void testSitemapNotServed() throws ServletException, IOException {
+    void testSitemapNotServed() throws ServletException, IOException {
         // given
         MockSlingHttpServletRequest request = newSitemapReq("sitemap", root);
         MockSlingHttpServletResponse response = context.response();

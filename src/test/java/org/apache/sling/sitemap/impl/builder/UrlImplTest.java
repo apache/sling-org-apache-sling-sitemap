@@ -25,9 +25,11 @@ import org.apache.sling.sitemap.spi.builder.AbstractExtension;
 import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
 import org.apache.sling.testing.mock.sling.junit5.SlingContext;
+import org.apache.sling.testing.mock.sling.junit5.SlingContextExtension;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -37,16 +39,17 @@ import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UrlImplTest extends AbstractBuilderTest {
+@ExtendWith({ SlingContextExtension.class })
+class UrlImplTest extends AbstractBuilderTest {
 
     private static final Instant DATETIME = Instant.ofEpochMilli(1622122594000L);
 
-    public final SlingContext context = new SlingContext();
+    final SlingContext context = new SlingContext();
 
     private ExtensionProviderManager extensionManager;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         context.registerService(
                 SitemapExtensionProvider.class, new TestExtensionProvider(),
                 "extension.interface", TestExtension.class.getName(),
@@ -58,7 +61,7 @@ public class UrlImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testAddFullUrl() throws SitemapException, IOException {
+    void testAddFullUrl() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl subject = new SitemapImpl(writer, extensionManager);
@@ -74,7 +77,7 @@ public class UrlImplTest extends AbstractBuilderTest {
 
         // then
         assertSitemap(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
                         "xmlns:tst=\"http://localhost/schema/test/1.0\">"
                         + "<url>"
                         + "<loc>http://example.com</loc>"
@@ -88,7 +91,7 @@ public class UrlImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testPriorityNormalization() throws SitemapException, IOException {
+    void testPriorityNormalization() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl subject = new SitemapImpl(writer, extensionManager);
@@ -100,7 +103,7 @@ public class UrlImplTest extends AbstractBuilderTest {
 
         // then
         assertSitemap(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
                         "xmlns:tst=\"http://localhost/schema/test/1.0\">"
                         + "<url>"
                         + "<loc>http://example.com/page1.html</loc>"
@@ -116,7 +119,7 @@ public class UrlImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testWithExtensions() throws SitemapException, IOException {
+    void testWithExtensions() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl subject = new SitemapImpl(writer, extensionManager);
@@ -131,7 +134,7 @@ public class UrlImplTest extends AbstractBuilderTest {
 
         // then
         assertEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
                         "xmlns:tst=\"http://localhost/schema/test/1.0\">"
                         + "<url>"
                         + "<loc>http://example.com/page1.html</loc>"
@@ -145,10 +148,11 @@ public class UrlImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testWritingUrlOrExtensionTwiceFails() throws SitemapException, IOException {
+    void testWritingUrlOrExtensionTwiceFails() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl subject = new SitemapImpl(writer, extensionManager);
+        Instant now = Instant.now();
 
         // when
         Url url = subject.addUrl("http://example.com/page1.html");
@@ -158,7 +162,7 @@ public class UrlImplTest extends AbstractBuilderTest {
 
         assertThrows(IllegalStateException.class, () -> url.setPriority(0.0));
         assertThrows(IllegalStateException.class, () -> url.setChangeFrequency(Url.ChangeFrequency.ALWAYS));
-        assertThrows(IllegalStateException.class, () -> url.setLastModified(Instant.now()));
+        assertThrows(IllegalStateException.class, () -> url.setLastModified(now));
         assertThrows(IllegalStateException.class, () -> url.addExtension(TestExtension.class));
         assertThrows(IllegalStateException.class, () -> subject.addUrl("http://foo.bar"));
         assertThrows(IllegalStateException.class, subject::close);

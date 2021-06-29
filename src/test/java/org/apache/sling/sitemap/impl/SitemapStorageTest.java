@@ -60,7 +60,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
 public class SitemapStorageTest {
 
-    public final SlingContext context = new SlingContext();
+    final SlingContext context = new SlingContext();
 
     private final SitemapStorage subject = new SitemapStorage();
     private final SitemapGeneratorManagerImpl generatorManager = new SitemapGeneratorManagerImpl();
@@ -72,7 +72,7 @@ public class SitemapStorageTest {
     private ServiceUserMapped serviceUser;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         context.registerService(SitemapGenerator.class, generator);
         context.registerService(ServiceUserMapped.class, serviceUser, "subServiceName", "sitemap-writer");
         context.registerInjectActivateService(configuration);
@@ -87,7 +87,7 @@ public class SitemapStorageTest {
     // Read/Write
 
     @Test
-    public void testConsecutiveWriteOfStateUpdatesContent() throws IOException {
+    void testConsecutiveWriteOfStateUpdatesContent() throws IOException {
         // given
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
@@ -103,7 +103,7 @@ public class SitemapStorageTest {
     }
 
     @Test
-    public void testConsecutiveWriteOfSitemapUpdatesContent() throws IOException {
+    void testConsecutiveWriteOfSitemapUpdatesContent() throws IOException {
         // given
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
                 "sitemapRoot", Boolean.TRUE
@@ -121,7 +121,7 @@ public class SitemapStorageTest {
     }
 
     @Test
-    public void testListSitemapsReturnsOnlySitemaps() throws IOException {
+    void testListSitemapsReturnsOnlySitemaps() throws IOException {
         // given
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
@@ -142,7 +142,7 @@ public class SitemapStorageTest {
     // Cleanup
 
     @Test
-    public void testStateExpires() throws InterruptedException, IOException {
+    void testStateExpires() throws InterruptedException, IOException {
         // given
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
@@ -159,7 +159,7 @@ public class SitemapStorageTest {
 
 
     @Test
-    public void testCleanupExpiredStates() throws Exception {
+    void testCleanupExpiredStates() throws Exception {
         // given
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
@@ -180,7 +180,7 @@ public class SitemapStorageTest {
     }
 
     @Test
-    public void testCleanupObsoleteSitemapsAfterTopLevelChanged() throws Exception {
+    void testCleanupObsoleteSitemapsAfterTopLevelChanged() throws Exception {
         // given
         Resource newRoot = context.create().resource("/content/site/ch");
         Resource initialRoot = context.create().resource("/content/site/ch/de-ch", ImmutableMap.of(
@@ -208,7 +208,7 @@ public class SitemapStorageTest {
     }
 
     @Test
-    public void testCleanupObsoleteSitemapsAfterNestedSitemapRootChanged() throws Exception {
+    void testCleanupObsoleteSitemapsAfterNestedSitemapRootChanged() throws Exception {
         // given
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
@@ -238,7 +238,7 @@ public class SitemapStorageTest {
     // Eventing
 
     @Test
-    public void testNoPurgeEventSentOnStateCleanup() throws IOException, InterruptedException {
+    void testNoPurgeEventSentOnStateCleanup() throws IOException, InterruptedException {
         // given
         List<Event> capturedEvents = new ArrayList<>();
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
@@ -259,7 +259,7 @@ public class SitemapStorageTest {
     }
 
     @Test
-    public void testUpdatedAndPurgeEventSentOnSitemapWriteCleanup() throws IOException, InterruptedException {
+    void testUpdatedAndPurgeEventSentOnSitemapWriteCleanup() throws IOException, InterruptedException {
         // given
         List<Event> capturedEvents = new ArrayList<>();
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
@@ -287,7 +287,7 @@ public class SitemapStorageTest {
     }
 
     @Test
-    public void testUpdatedAndPurgeEventSentOnSitemapWriteDelete() throws IOException, InterruptedException {
+    void testUpdatedAndPurgeEventSentOnSitemapWriteDelete() throws IOException, InterruptedException {
         // given
         List<Event> capturedEvents = new ArrayList<>();
         Resource root = context.create().resource("/content/site/de", ImmutableMap.of(
@@ -333,6 +333,7 @@ public class SitemapStorageTest {
             @Override
             public boolean matches(Object o) {
                 return o instanceof Event
+                        && topic.equals(((Event) o).getTopic())
                         && storagePath.equals(
                         ((Event) o).getProperty(SitemapGenerator.EVENT_PROPERTY_SITEMAP_STORAGE_PATH));
             }

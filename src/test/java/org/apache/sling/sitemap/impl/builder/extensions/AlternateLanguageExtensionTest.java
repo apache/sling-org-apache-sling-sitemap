@@ -27,7 +27,6 @@ import org.apache.sling.sitemap.builder.Url;
 import org.apache.sling.sitemap.builder.extensions.AlternateLanguageExtension;
 import org.apache.sling.sitemap.impl.builder.AbstractBuilderTest;
 import org.apache.sling.sitemap.impl.builder.SitemapImpl;
-import org.apache.sling.sitemap.impl.builder.SitemapImplTest;
 import org.apache.sling.testing.mock.sling.junit5.SlingContext;
 import org.apache.sling.testing.mock.sling.junit5.SlingContextExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,20 +34,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith({ SlingContextExtension.class })
-public class AlternateLanguageExtensionTest extends AbstractBuilderTest {
+class AlternateLanguageExtensionTest extends AbstractBuilderTest {
 
-    public final SlingContext context = new SlingContext();
+    final SlingContext context = new SlingContext();
 
     private ExtensionProviderManager extensionProviderManager;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         context.registerInjectActivateService(new AlternateLanguageExtensionProvider());
         extensionProviderManager = context.registerInjectActivateService(new ExtensionProviderManager());
     }
 
     @Test
-    public void testAlternateLanguageCombinations() throws SitemapException, IOException {
+    void testAlternateLanguageCombinations() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl sitemap = new SitemapImpl(writer, extensionProviderManager);
@@ -68,7 +67,7 @@ public class AlternateLanguageExtensionTest extends AbstractBuilderTest {
 
         // then
         assertSitemap(
-            SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
+            AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
                 "xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">"
                 + "<url>"
                 + "<loc>http://example.ch/de.html</loc>"
@@ -82,7 +81,7 @@ public class AlternateLanguageExtensionTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testNothingWrittenWhenExtensionMissesMandatoryProperties() throws SitemapException, IOException {
+    void testNothingWrittenWhenExtensionMissesMandatoryProperties() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl sitemap = new SitemapImpl(writer, extensionProviderManager);
@@ -97,7 +96,7 @@ public class AlternateLanguageExtensionTest extends AbstractBuilderTest {
 
         // then
         assertSitemap(
-            SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
+            AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" " +
                 "xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">"
                 + "<url>"
                 + "<loc>http://example.ch/de.html</loc>"

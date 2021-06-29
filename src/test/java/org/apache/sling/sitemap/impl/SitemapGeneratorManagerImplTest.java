@@ -39,9 +39,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class SitemapGeneratorManagerImplTest {
+class SitemapGeneratorManagerImplTest {
 
-    public final SlingContext context = new SlingContext();
+    final SlingContext context = new SlingContext();
 
     private final SitemapGeneratorManagerImpl subject = new SitemapGeneratorManagerImpl();
     private final SitemapServiceConfiguration sitemapServiceConfiguration = new SitemapServiceConfiguration();
@@ -54,7 +54,7 @@ public class SitemapGeneratorManagerImplTest {
     private SitemapGenerator generator3;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         context.registerService(SitemapGenerator.class, generator1, "service.ranking", 1);
         context.registerService(SitemapGenerator.class, generator2, "service.ranking", 2);
         context.registerService(SitemapGenerator.class, generator3, "service.ranking", 3);
@@ -64,7 +64,7 @@ public class SitemapGeneratorManagerImplTest {
     }
 
     @Test
-    public void testAllGeneratorsReturnedWhenAllGenerateDifferentNames() {
+    void testAllGeneratorsReturnedWhenAllGenerateDifferentNames() {
         // given
         when(generator1.getNames(any())).thenReturn(Collections.singleton("sitemap1"));
         when(generator2.getNames(any())).thenReturn(Collections.singleton("sitemap2"));
@@ -88,7 +88,7 @@ public class SitemapGeneratorManagerImplTest {
     }
 
     @Test
-    public void testAllGeneratorsOnDemand() {
+    void testAllGeneratorsOnDemand() {
         // given
         when(generator1.getNames(any())).thenReturn(Collections.singleton("sitemap1"));
         when(generator2.getNames(any())).thenReturn(Collections.singleton("sitemap2"));
@@ -114,7 +114,7 @@ public class SitemapGeneratorManagerImplTest {
     }
 
     @Test
-    public void testThatHigherRankedGeneratorsTakePrecedenceOnConflictingNames() {
+    void testThatHigherRankedGeneratorsTakePrecedenceOnConflictingNames() {
         // given
         when(generator1.getNames(any())).thenReturn(Collections.singleton(SitemapService.DEFAULT_SITEMAP_NAME));
         when(generator2.getNames(any())).thenReturn(Collections.singleton(SitemapService.DEFAULT_SITEMAP_NAME));

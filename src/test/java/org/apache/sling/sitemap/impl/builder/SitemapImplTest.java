@@ -37,21 +37,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith({SlingContextExtension.class})
-public class SitemapImplTest extends AbstractBuilderTest {
+class SitemapImplTest extends AbstractBuilderTest {
 
-    public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-
-    public final SlingContext context = new SlingContext();
+    final SlingContext context = new SlingContext();
 
     private ExtensionProviderManager extensionManager;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         extensionManager = context.registerInjectActivateService(new ExtensionProviderManager());
     }
 
     @Test
-    public void testEmptySitemap() throws IOException {
+    void testEmptySitemap() throws IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl subject = new SitemapImpl(writer, extensionManager);
@@ -68,7 +66,7 @@ public class SitemapImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testSitemapWithSingleLocation() throws SitemapException, IOException {
+    void testSitemapWithSingleLocation() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl subject = new SitemapImpl(writer, extensionManager);
@@ -88,7 +86,7 @@ public class SitemapImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testWriteAfterRead() throws SitemapException, IOException {
+    void testWriteAfterRead() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl subject = new SitemapImpl(writer, extensionManager);
@@ -117,7 +115,7 @@ public class SitemapImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testIOExceptionWrappedInSitemapException() throws IOException {
+    void testIOExceptionWrappedInSitemapException() throws IOException, SitemapException {
         // given
         Writer throwingWriter = new Writer() {
             @Override
@@ -137,10 +135,11 @@ public class SitemapImplTest extends AbstractBuilderTest {
         };
         SitemapImpl sitemap = new SitemapImpl(throwingWriter, extensionManager, false);
 
-        SitemapException ex = assertThrows(SitemapException.class, () -> {
-            sitemap.addUrl("http://localhost:4502");
-            sitemap.addUrl("http://localhost:4503"); // throws
-        });
+        // when
+        sitemap.addUrl("http://localhost:4502");
+
+        // then
+        SitemapException ex = assertThrows(SitemapException.class, () -> sitemap.addUrl("http://localhost:4503"));
         assertThat(ex.getCause(), instanceOf(IOException.class));
     }
 }

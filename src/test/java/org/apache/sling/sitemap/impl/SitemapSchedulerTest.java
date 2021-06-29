@@ -54,9 +54,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class SitemapSchedulerTest {
+class SitemapSchedulerTest {
 
-    public final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
+    final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
 
     private final SitemapScheduler subject = new SitemapScheduler();
     private final SitemapGeneratorManagerImpl generatorManager = new SitemapGeneratorManagerImpl();
@@ -75,7 +75,7 @@ public class SitemapSchedulerTest {
     private Resource rootEnContent;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         rootDe = context.create().resource("/content/site/de", Collections.singletonMap(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
         rootEn = context.create().resource("/content/site/en");
@@ -99,7 +99,7 @@ public class SitemapSchedulerTest {
     }
 
     @Test
-    public void testOneDefaultSitemapJobStartedForEachRoot() {
+    void testOneDefaultSitemapJobStartedForEachRoot() {
         // given
         context.registerInjectActivateService(subject);
         initResourceResolver(subject, resolver -> MockJcr.setQueryResult(
@@ -130,7 +130,7 @@ public class SitemapSchedulerTest {
     }
 
     @Test
-    public void testOneSitemapJobStartedForEachName() {
+    void testOneSitemapJobStartedForEachName() {
         // given
         context.registerInjectActivateService(subject);
         initResourceResolver(subject, resolver -> MockJcr.setQueryResult(
@@ -162,7 +162,7 @@ public class SitemapSchedulerTest {
     }
 
     @Test
-    public void testNothingScheduledWhenNameDoesNotMatchGeneratorFromConfiguration() {
+    void testNothingScheduledWhenNameDoesNotMatchGeneratorFromConfiguration() {
         // given
         context.registerInjectActivateService(subject, "includeGenerators", new String[]{
                 generator1.getClass().getName()
@@ -194,7 +194,7 @@ public class SitemapSchedulerTest {
     }
 
     @Test
-    public void testNothingScheduledWhenNameDoesNotNamesFromConfiguration() {
+    void testNothingScheduledWhenNameDoesNotNamesFromConfiguration() {
         // given
         context.registerInjectActivateService(subject, "names", new String[]{
                 "foobar"

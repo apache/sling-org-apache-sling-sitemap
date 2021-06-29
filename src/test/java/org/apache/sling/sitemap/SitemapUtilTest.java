@@ -42,12 +42,12 @@ import static org.hamcrest.Matchers.aMapWithSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith({SlingContextExtension.class})
-public class SitemapUtilTest {
+class SitemapUtilTest {
 
-    public final SlingContext context = new SlingContext();
+    final SlingContext context = new SlingContext();
 
     @Test
-    public void testSingleRootSitemapName() {
+    void testSingleRootSitemapName() {
         // given
         Resource root = context.create().resource("/content/site/de", Collections.singletonMap(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
@@ -63,7 +63,7 @@ public class SitemapUtilTest {
     }
 
     @Test
-    public void testMultiRootSitemapName() {
+    void testMultiRootSitemapName() {
         // given
         context.create().resource("/content/site/de", ImmutableMap.of(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
@@ -90,7 +90,7 @@ public class SitemapUtilTest {
     }
 
     @Test
-    public void testSitemapResolutionFromFileName() {
+    void testSitemapResolutionFromFileName() {
         // given
         Resource root = context.create().resource("/content/site/de", Collections.singletonMap(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE

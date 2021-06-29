@@ -50,9 +50,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class SitemapServiceImplSchedulingTest {
+class SitemapServiceImplSchedulingTest {
 
-    public final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
+    final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
 
     private final SitemapServiceImpl subject = new SitemapServiceImpl();
     private final SitemapStorage storage = new SitemapStorage();
@@ -92,7 +92,7 @@ public class SitemapServiceImplSchedulingTest {
     private SitemapScheduler schedulerWithGenerator2OnMicrosite;
 
     @BeforeEach
-    public void setup() throws LoginException {
+    void setup() throws LoginException {
         siteRoot = context.create().resource("/content/site/de", Collections.singletonMap(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
         ));
@@ -139,7 +139,7 @@ public class SitemapServiceImplSchedulingTest {
     }
 
     @Test
-    public void testAllSchedulersCalled() {
+    void testAllSchedulersCalled() {
         // when
         subject.scheduleGeneration();
 
@@ -149,7 +149,7 @@ public class SitemapServiceImplSchedulingTest {
     }
 
     @Test
-    public void testSchedulersCalledForName() {
+    void testSchedulersCalledForName() {
         // when
         subject.scheduleGeneration("<default>");
 
@@ -159,7 +159,7 @@ public class SitemapServiceImplSchedulingTest {
     }
 
     @Test
-    public void testSchedulersCalledForPath() {
+    void testSchedulersCalledForPath() {
         // when
         subject.scheduleGeneration(siteRoot);
 
@@ -169,13 +169,13 @@ public class SitemapServiceImplSchedulingTest {
     }
 
     @Test
-    public void testSchedulersCalledForPathAndName() {
+    void testSchedulersCalledForPathAndName() {
         // when
         subject.scheduleGeneration(siteRoot, "foo");
         subject.scheduleGeneration(micrositeRoot, "foo");
 
         // then
-        verify(schedulerWithGenerator1OnSite, times(1)).addJob(eq(siteRoot.getPath()), eq("foo"));
-        verify(schedulerWithGenerator2OnMicrosite, times(1)).addJob(eq(micrositeRoot.getPath()), eq("foo"));
+        verify(schedulerWithGenerator1OnSite, times(1)).addJob(siteRoot.getPath(),"foo");
+        verify(schedulerWithGenerator2OnMicrosite, times(1)).addJob(micrositeRoot.getPath(),"foo");
     }
 }

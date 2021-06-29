@@ -64,9 +64,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class SitemapInventoryPluginTest {
+class SitemapInventoryPluginTest {
 
-    public final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
+    final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
     private final SitemapInventoryPlugin subject = new SitemapInventoryPlugin();
     private final SitemapServiceConfiguration configuration = new SitemapServiceConfiguration();
 
@@ -100,7 +100,7 @@ public class SitemapInventoryPluginTest {
     private ResourceResolverFactory resourceResolverFactory;
 
     @BeforeEach
-    public void setup() throws LoginException {
+    void setup() throws LoginException {
         ResourceResolver resourceResolver = spy(context.resourceResolver());
 
         context.registerService(SitemapService.class, sitemapService);
@@ -155,7 +155,7 @@ public class SitemapInventoryPluginTest {
     }
 
     @Test
-    public void testJson() {
+    void testJson() {
         // given
         StringWriter writer = new StringWriter();
 
@@ -167,7 +167,7 @@ public class SitemapInventoryPluginTest {
     }
 
     @Test
-    public void testText() {
+    void testText() {
         // given
         StringWriter writer = new StringWriter();
 

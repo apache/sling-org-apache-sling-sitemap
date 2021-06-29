@@ -105,7 +105,7 @@ public class SitemapStorage implements Runnable {
     @Reference(policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
     private MetricsService metricsService;
 
-    private String rootPath = "/var/sitemaps";
+    private String rootPath;
     private int maxStateAge = Integer.MAX_VALUE;
 
     private Counter checkpointReadsExpired;
@@ -325,7 +325,7 @@ public class SitemapStorage implements Runnable {
             Resource topLevelSitemapRoot = getTopLevelSitemapRoot(sitemapRoot);
             Predicate<SitemapStorageInfo> filter;
 
-            if (!isTopLevelSitemapRoot(sitemapRoot) || names.size() > 0) {
+            if (!isTopLevelSitemapRoot(sitemapRoot) || !names.isEmpty()) {
                 // return only those that match at least on of the names requested
                 filter = info -> names.stream()
                         .map(name -> SitemapUtil.getSitemapSelector(sitemapRoot, topLevelSitemapRoot, name))

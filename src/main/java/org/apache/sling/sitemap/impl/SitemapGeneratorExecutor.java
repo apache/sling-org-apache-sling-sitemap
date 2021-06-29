@@ -143,9 +143,9 @@ public class SitemapGeneratorExecutor implements JobExecutor {
                 IOUtils.copy(existingData, buffer);
             }
             // prefill the state from storage
-            for (String key : state.keySet()) {
-                if (key.indexOf(':') < 0) {
-                    genCtxt.data.put(key, state.get(key));
+            for (Map.Entry<String, Object> entry : state.entrySet()) {
+                if (entry.getKey().indexOf(':') < 0) {
+                    genCtxt.data.put(entry.getKey(), entry.getValue());
                 }
             }
             // get the file index, if any
@@ -203,6 +203,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
             return buf.get() & 0xFF;
         }
 
+        @Override
         public int read(byte @NotNull [] bytes, int off, int len) {
             if (!buf.hasRemaining()) {
                 return -1;
@@ -216,13 +217,13 @@ public class SitemapGeneratorExecutor implements JobExecutor {
 
     private static class CopyableByteArrayOutputStream extends ByteArrayOutputStream {
 
-        int checkpoint = -1;
+        private int checkpoint = -1;
 
-        void checkpoint() {
+        private void createCheckpoint() {
             checkpoint = count;
         }
 
-        void rollback() {
+        private void rollback() {
             ensureCheckpoint();
             count = checkpoint;
         }
@@ -322,7 +323,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
 
         private boolean rotateIfNecessary() throws IOException {
             // create a checkpoint before flushing the pending url.
-            buffer.checkpoint();
+            buffer.createCheckpoint();
             // flush the sitemap to write the last url to the underlying buffer
             currentSitemap.flush();
             // if the buffer size exceeds the limit (-10 bytes for the closing tag)
@@ -430,7 +431,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
 
         @Override
         public void setProperty(@NotNull String name, @Nullable Object data) {
-            if (name.indexOf(':') > 0) {
+            if (name.indexOf(':') >= 0) {
                 // don't allow using properties from a namespace
                 return;
             }

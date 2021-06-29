@@ -85,6 +85,13 @@ public class SitemapInventoryPlugin implements InventoryPrinter {
 
     private void printJson(PrintWriter pw) {
         pw.print('{');
+        printSchedulerJson(pw);
+        pw.print(',');
+        printRootsJson(pw);
+        pw.print('}');
+    }
+
+    private void printSchedulerJson(PrintWriter pw) {
         pw.print("\"schedulers\":[");
         boolean hasScheduler = false;
         for (ServiceReference<?> ref : bundleContext.getBundle().getRegisteredServices()) {
@@ -102,8 +109,10 @@ public class SitemapInventoryPlugin implements InventoryPrinter {
                 pw.print("\"}");
             }
         }
-        pw.print("],");
+        pw.print(']');
+    }
 
+    private void printRootsJson(PrintWriter pw) {
         pw.print("\"roots\":{");
         try (ResourceResolver resolver = resourceResolverFactory.getServiceResourceResolver(AUTH)) {
             Iterator<Resource> roots = SitemapUtil.findSitemapRoots(resolver, "/");
@@ -149,14 +158,20 @@ public class SitemapInventoryPlugin implements InventoryPrinter {
             LOG.warn("Failed to get inventory of sitemaps: {}", ex.getMessage(), ex);
         }
         pw.print('}');
-        pw.print('}');
     }
 
     private void printText(PrintWriter pw) {
         pw.println("# Apache Sling Sitemap Schedulers");
         pw.println("# -------------------------------");
-        pw.println("schedulers:");
+        printSchedulersText(pw);
+        pw.println();
+        pw.println("# Apache Sling Sitemap Roots");
+        pw.println("# --------------------------");
+        printRootsText(pw);
+    }
 
+    private void printSchedulersText(PrintWriter pw) {
+        pw.println("schedulers:");
         for (ServiceReference<?> ref : bundleContext.getBundle().getRegisteredServices()) {
             Object schedulerExp = ref.getProperty(Scheduler.PROPERTY_SCHEDULER_EXPRESSION);
             Object schedulerName = ref.getProperty(Scheduler.PROPERTY_SCHEDULER_NAME);
@@ -169,13 +184,10 @@ public class SitemapInventoryPlugin implements InventoryPrinter {
                 pw.println();
             }
         }
+    }
 
-        pw.println();
-        pw.println();
-        pw.println("# Apache Sling Sitemap Roots");
-        pw.println("# --------------------------");
+    private void printRootsText(PrintWriter pw) {
         pw.println("roots:");
-
         try (ResourceResolver resolver = resourceResolverFactory.getServiceResourceResolver(AUTH)) {
             Iterator<Resource> roots = SitemapUtil.findSitemapRoots(resolver, "/");
             while (roots.hasNext()) {

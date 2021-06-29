@@ -132,7 +132,7 @@ public class ExtensionProviderManager {
                 emptyTag = Boolean.parseBoolean((String) emptyTagProp);
             } else {
                 emptyTag = false;
-                LOG.debug("Unknown type for emptyTag: " + emptyTagProp);
+                LOG.debug("Unknown type for emptyTag: {}", emptyTagProp);
             }
         }
 

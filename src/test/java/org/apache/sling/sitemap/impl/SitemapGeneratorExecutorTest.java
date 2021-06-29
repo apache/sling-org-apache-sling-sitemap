@@ -26,8 +26,8 @@ import org.apache.sling.serviceusermapping.ServiceUserMapped;
 import org.apache.sling.sitemap.SitemapException;
 import org.apache.sling.sitemap.SitemapService;
 import org.apache.sling.sitemap.builder.Sitemap;
+import org.apache.sling.sitemap.impl.builder.AbstractBuilderTest;
 import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
-import org.apache.sling.sitemap.impl.builder.SitemapImplTest;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
 import org.apache.sling.testing.mock.osgi.MockOsgi;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -53,9 +53,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class SitemapGeneratorExecutorTest {
+class SitemapGeneratorExecutorTest {
 
-    public final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
+    final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
 
     private final SitemapGeneratorExecutor subject = new SitemapGeneratorExecutor();
     private final SitemapGeneratorManagerImpl generatorManager = new SitemapGeneratorManagerImpl();
@@ -80,7 +80,7 @@ public class SitemapGeneratorExecutorTest {
     private Resource storageRoot;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         rootResource = context.create().resource("/content/site/de", Collections.singletonMap(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
         ));
@@ -102,7 +102,7 @@ public class SitemapGeneratorExecutorTest {
     }
 
     @Test
-    public void testNoStateWrittenOnLargerChunkSize() throws IOException {
+    void testNoStateWrittenOnLargerChunkSize() throws IOException {
         context.registerService(SitemapGenerator.class, new FailOnceGenerator(Integer.MAX_VALUE,
                 "http://example.com/page1.html",
                 "http://example.com/page2.html",
@@ -117,7 +117,7 @@ public class SitemapGeneratorExecutorTest {
 
         // then
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page1.html</loc></url>"
                         + "<url><loc>http://example.com/page2.html</loc></url>"
                         + "<url><loc>http://example.com/page3.html</loc></url>"
@@ -131,7 +131,7 @@ public class SitemapGeneratorExecutorTest {
     }
 
     @Test
-    public void testStateRemovedOnJobStopped() {
+    void testStateRemovedOnJobStopped() {
         context.registerService(SitemapGenerator.class, new FailOnceGenerator(1,
                 "http://example.com/page1.html",
                 "http://example.com/page2.html"
@@ -159,7 +159,7 @@ public class SitemapGeneratorExecutorTest {
     }
 
     @Test
-    public void testGeneratorExceptionRethrown() {
+    void testGeneratorExceptionRethrown() {
         // given
         ThrowingGenerator generator = new ThrowingGenerator();
         context.registerService(SitemapGenerator.class, generator);
@@ -182,7 +182,7 @@ public class SitemapGeneratorExecutorTest {
     }
 
     @Test
-    public void testJobResumesAfterBeingAborted() throws IOException {
+    void testJobResumesAfterBeingAborted() throws IOException {
         // given
         context.registerService(SitemapGenerator.class, new FailOnceGenerator(4,
                 "http://example.com/page1.html",
@@ -203,7 +203,7 @@ public class SitemapGeneratorExecutorTest {
 
         // then
         assertResourceDataEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page1.html</loc></url>"
                         + "<url><loc>http://example.com/page2.html</loc></url>"
                         + "<url><loc>http://example.com/page3.html</loc></url>",
@@ -216,7 +216,7 @@ public class SitemapGeneratorExecutorTest {
         // then
         assertNull(storageRoot.getChild("content/site/de/sitemap.part"));
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page1.html</loc></url>"
                         + "<url><loc>http://example.com/page2.html</loc></url>"
                         + "<url><loc>http://example.com/page3.html</loc></url>"
@@ -229,7 +229,7 @@ public class SitemapGeneratorExecutorTest {
     }
 
     @Test
-    public void testJobResumesAfterBeingAbortedMultiFile() throws IOException {
+    void testJobResumesAfterBeingAbortedMultiFile() throws IOException {
         // given
         MockOsgi.activate(sitemapServiceConfiguration, context.bundleContext(), "maxEntries", 3);
         context.registerService(SitemapGenerator.class, new FailOnceGenerator(5,
@@ -252,7 +252,7 @@ public class SitemapGeneratorExecutorTest {
 
         // then
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page1.html</loc></url>"
                         + "<url><loc>http://example.com/page2.html</loc></url>"
                         + "<url><loc>http://example.com/page3.html</loc></url>"
@@ -261,7 +261,7 @@ public class SitemapGeneratorExecutorTest {
                 storageRoot.getChild("content/site/de/sitemap.xml")
         );
         assertResourceDataEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page4.html</loc></url>"
                         + "<url><loc>http://example.com/page5.html</loc></url>",
                 storageRoot.getChild("content/site/de/sitemap.part")
@@ -273,7 +273,7 @@ public class SitemapGeneratorExecutorTest {
         // then
         assertNull(storageRoot.getChild("content/site/de/sitemap.part"));
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page1.html</loc></url>"
                         + "<url><loc>http://example.com/page2.html</loc></url>"
                         + "<url><loc>http://example.com/page3.html</loc></url>"
@@ -282,7 +282,7 @@ public class SitemapGeneratorExecutorTest {
                 storageRoot.getChild("content/site/de/sitemap.xml")
         );
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page4.html</loc></url>"
                         + "<url><loc>http://example.com/page5.html</loc></url>"
                         + "<url><loc>http://example.com/page6.html</loc></url>"
@@ -293,7 +293,7 @@ public class SitemapGeneratorExecutorTest {
     }
 
     @Test
-    public void testMultiFileConsistentWithSizeOverflow() throws IOException {
+    void testMultiFileConsistentWithSizeOverflow() throws IOException {
         // 200 = 38 (header) + 60 (urlset) + 2 * 51 (url)
         MockOsgi.activate(sitemapServiceConfiguration, context.bundleContext(), "maxSize", 200);
         context.registerService(SitemapGenerator.class, new FailOnceGenerator(Integer.MAX_VALUE,
@@ -308,21 +308,21 @@ public class SitemapGeneratorExecutorTest {
 
         // then
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page1.html</loc></url>"
                         + "</urlset>",
                 1,
                 storageRoot.getChild("content/site/de/sitemap.xml")
         );
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page2.html</loc></url>"
                         + "</urlset>",
                 1,
                 storageRoot.getChild("content/site/de/sitemap-2.xml")
         );
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page3.html</loc></url>"
                         + "</urlset>",
                 1,
@@ -331,7 +331,7 @@ public class SitemapGeneratorExecutorTest {
     }
 
     @Test
-    public void testObsoleteFilesPurgedWhenMultiFileUpdated() throws IOException {
+    void testObsoleteFilesPurgedWhenMultiFileUpdated() throws IOException {
         // given
         FailOnceGenerator generator = new FailOnceGenerator(Integer.MAX_VALUE,
                 "http://example.com/page1.html",
@@ -347,21 +347,21 @@ public class SitemapGeneratorExecutorTest {
 
         // then
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page1.html</loc></url>"
                         + "</urlset>",
                 1,
                 storageRoot.getChild("content/site/de/sitemap.xml")
         );
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page2.html</loc></url>"
                         + "</urlset>",
                 1,
                 storageRoot.getChild("content/site/de/sitemap-2.xml")
         );
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page3.html</loc></url>"
                         + "</urlset>",
                 1,
@@ -374,7 +374,7 @@ public class SitemapGeneratorExecutorTest {
 
         // then
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/pageX.html</loc></url>"
                         + "</urlset>",
                 1,
@@ -385,7 +385,7 @@ public class SitemapGeneratorExecutorTest {
     }
 
     @Test
-    public void testGenerationContextDoesNotLeakRawJcrData() throws IOException {
+    void testGenerationContextDoesNotLeakRawJcrData() throws IOException {
         // given
         String injectedText = "foobar";
         context.registerService(SitemapGenerator.class, new FailOnceGenerator(1,
@@ -417,7 +417,7 @@ public class SitemapGeneratorExecutorTest {
         subject.process(job, executionContext);
 
         assertResourceDataAndEntriesEquals(
-                SitemapImplTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                AbstractBuilderTest.XML_HEADER + "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
                         + "<url><loc>http://example.com/page1.html</loc></url>"
                         + "<url><loc>http://example.com/page2.html</loc></url>"
                         + "</urlset>",

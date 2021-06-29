@@ -145,11 +145,12 @@ public class UrlImpl implements Url {
             // write the extensions as separate chunks to the same output
             if (extensions != null) {
                 // use a single StringWriter and reset it for each extension to save memory
-                StringWriter extensionChunk = new StringWriter();
-                for (ExtensionMeta extension : extensions) {
-                    writeExtension(extensionChunk, extension);
-                    urlChunk.append(extensionChunk.asCharSequence());
-                    extensionChunk.reset();
+                try (StringWriter extensionChunk = new StringWriter()) {
+                    for (ExtensionMeta extension : extensions) {
+                        writeExtension(extensionChunk, extension);
+                        urlChunk.append(extensionChunk.asCharSequence());
+                        extensionChunk.reset();
+                    }
                 }
             }
 

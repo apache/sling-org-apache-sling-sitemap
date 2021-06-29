@@ -53,9 +53,9 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class SitemapServiceImplTest {
+class SitemapServiceImplTest {
 
-    public final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
+    final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
 
     private final SitemapServiceImpl subject = new SitemapServiceImpl();
     private final SitemapStorage storage = new SitemapStorage();
@@ -86,7 +86,7 @@ public class SitemapServiceImplTest {
     private Resource noRoot;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         deRoot = context.create().resource("/content/site/de", Collections.singletonMap(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
         ));
@@ -123,7 +123,7 @@ public class SitemapServiceImplTest {
     }
 
     @Test
-    public void testSitemapIndexUrlReturned() {
+    void testSitemapIndexUrlReturned() {
         // given
         generator.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
         generator.setNames(frRoot, "a", "b");
@@ -157,7 +157,7 @@ public class SitemapServiceImplTest {
     }
 
     @Test
-    public void testSitemapUrlReturnEmptyCollections() {
+    void testSitemapUrlReturnEmptyCollections() {
         // no name
         assertThat(subject.getSitemapInfo(deRoot), hasSize(0));
         // no names nested
@@ -167,7 +167,7 @@ public class SitemapServiceImplTest {
     }
 
     @Test
-    public void testSitemapUrlReturnsProperSelectors() throws IOException {
+    void testSitemapUrlReturnsProperSelectors() throws IOException {
         // given
         storage.writeSitemap(deRoot, SitemapService.DEFAULT_SITEMAP_NAME, new ByteArrayInputStream(new byte[0]), 1, 100,
                 1);

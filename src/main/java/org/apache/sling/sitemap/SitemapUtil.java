@@ -18,6 +18,16 @@
  */
 package org.apache.sling.sitemap;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import javax.jcr.query.Query;
+
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.sling.api.resource.Resource;
@@ -26,9 +36,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
-import javax.jcr.query.Query;
-import java.util.*;
-
 /**
  * A utility class to give access to common functionality used for sitemaps.
  */
@@ -36,6 +43,8 @@ import java.util.*;
 public final class SitemapUtil {
 
     private static final String JCR_SYSTEM_PATH = "/" + JcrConstants.JCR_SYSTEM + "/";
+    private static final String SITEMAP_SELECTOR = "sitemap";
+    private static final String SITEMAP_SELECTOR_SUFFIX = "-" + SITEMAP_SELECTOR;
 
     private SitemapUtil() {
         super();
@@ -125,8 +134,8 @@ public final class SitemapUtil {
      */
     @NotNull
     public static String getSitemapSelector(@NotNull Resource sitemapRoot, @NotNull Resource topLevelSitemapRoot,
-            @NotNull String name) {
-        name = SitemapService.DEFAULT_SITEMAP_NAME.equals(name) ? "sitemap" : name + "-sitemap";
+        @NotNull String name) {
+        name = SitemapService.DEFAULT_SITEMAP_NAME.equals(name) ? SITEMAP_SELECTOR : name + SITEMAP_SELECTOR_SUFFIX;
 
         if (!sitemapRoot.getPath().equals(topLevelSitemapRoot.getPath())) {
             String sitemapRootSubpath = sitemapRoot.getPath().substring(topLevelSitemapRoot.getPath().length() + 1);
@@ -155,26 +164,26 @@ public final class SitemapUtil {
      */
     @NotNull
     public static Map<Resource, String> resolveSitemapRoots(@NotNull Resource topLevelSitemapRoot,
-            @NotNull String sitemapSelector) {
+        @NotNull String sitemapSelector) {
         if (!isTopLevelSitemapRoot(topLevelSitemapRoot)) {
             // selectors are always relative to a top level sitemap root
             return Collections.emptyMap();
         }
-        if (sitemapSelector.equals("sitemap")) {
+        if (sitemapSelector.equals(SITEMAP_SELECTOR)) {
             return Collections.singletonMap(topLevelSitemapRoot, SitemapService.DEFAULT_SITEMAP_NAME);
         }
 
         List<String> parts = Arrays.asList(sitemapSelector.split("-"));
         List<String> relevantParts;
 
-        if (parts.size() == 2 && parts.get(0).equals("sitemap") && isInteger(parts.get(1))) {
+        if (parts.size() == 2 && parts.get(0).equals(SITEMAP_SELECTOR) && isInteger(parts.get(1))) {
             // default name with file index
             return Collections.singletonMap(topLevelSitemapRoot, SitemapService.DEFAULT_SITEMAP_NAME);
-        } else if (parts.size() > 1 && parts.get(parts.size() - 1).equals("sitemap")) {
+        } else if (parts.size() > 1 && parts.get(parts.size() - 1).equals(SITEMAP_SELECTOR)) {
             // no file index part
             relevantParts = parts.subList(0, parts.size() - 1);
-        } else if (parts.size() > 2 && parts.get(parts.size() - 2).equals("sitemap")
-                && isInteger(parts.get(parts.size() - 1))) {
+        } else if (parts.size() > 2 && parts.get(parts.size() - 2).equals(SITEMAP_SELECTOR)
+            && isInteger(parts.get(parts.size() - 1))) {
             // with file index part
             relevantParts = parts.subList(0, parts.size() - 2);
         } else {
@@ -215,8 +224,8 @@ public final class SitemapUtil {
                     // sitemaps given the normalized sitemap root path and the sitemap root's jcr:content is in the
                     // result set.
                     if (nextHit == null
-                            || nextHit.getPath().equals(correctedSearchPath)
-                            || nextHit.getPath().startsWith(JCR_SYSTEM_PATH)) {
+                        || nextHit.getPath().equals(correctedSearchPath)
+                        || nextHit.getPath().startsWith(JCR_SYSTEM_PATH)) {
                         continue;
                     }
                     return nextHit;
@@ -231,6 +240,9 @@ public final class SitemapUtil {
 
             @Override
             public Resource next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 Resource ret = next;
                 next = seek();
                 return ret;
@@ -248,13 +260,13 @@ public final class SitemapUtil {
     }
 
     private static void resolveSitemapRoots(@NotNull Resource sitemapRoot, @NotNull List<String> parts,
-            @NotNull Map<Resource, String> result) {
+        @NotNull Map<Resource, String> result) {
         if (isSitemapRoot(sitemapRoot)) {
             result.put(sitemapRoot, String.join("-", parts));
         }
-        for (int i = 0, j; i < parts.size(); i++) {
+        for (int i = 0; i < parts.size(); i++) {
             // products product page tops
-            j = i + 1;
+            int j = i + 1;
             String childName = String.join("-", parts.subList(0, j));
             Resource namedChild = sitemapRoot.getChild(childName);
             if (namedChild != null) {

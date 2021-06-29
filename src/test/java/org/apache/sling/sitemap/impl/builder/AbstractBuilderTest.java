@@ -36,6 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AbstractBuilderTest {
 
+    public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+
     private static final URL XML_XSD = AbstractBuilderTest.class.getClassLoader().getResource("xml.xsd");
     private static final URL XHTML_XSD = AbstractBuilderTest.class.getClassLoader().getResource("xhtml1-strict.xsd");
     private static final URL SITEMAP_XSD = AbstractBuilderTest.class.getClassLoader().getResource("sitemap-0.9.xsd");

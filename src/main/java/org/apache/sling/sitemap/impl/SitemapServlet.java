@@ -61,7 +61,7 @@ public class SitemapServlet extends SlingSafeMethodsServlet {
     static final String SITEMAP_EXTENSION = "xml";
 
     private static final Logger LOG = LoggerFactory.getLogger(SitemapServlet.class);
-    private static SitemapGenerator.Context NOOP_CONTEXT = new SitemapGenerator.Context() {
+    private static final SitemapGenerator.Context NOOP_CONTEXT = new SitemapGenerator.Context() {
         @Nullable
         @Override
         public <T> T getProperty(@NotNull String name, @NotNull Class<T> cls) {
@@ -76,6 +76,7 @@ public class SitemapServlet extends SlingSafeMethodsServlet {
 
         @Override
         public void setProperty(@NotNull String name, @Nullable Object data) {
+            // thei implementation of SitemapGenerator.Context doesn't track any state
         }
     };
 
@@ -110,9 +111,9 @@ public class SitemapServlet extends SlingSafeMethodsServlet {
                 doGetSitemapIndex(request, response, requestedResource);
             } else if (selectors.size() == 1 && selectors.contains(SITEMAP_SELECTOR)) {
                 // when only one selector is provided, that means the default sitemap got requested
-                doGetSitemap(request, response, requestedResource, selectors.get(0));
+                doGetSitemap(response, requestedResource, selectors.get(0));
             } else if (selectors.size() == 2 && selectors.get(0).equals(SITEMAP_SELECTOR)) {
-                doGetSitemap(request, response, requestedResource, selectors.get(1));
+                doGetSitemap(response, requestedResource, selectors.get(1));
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
@@ -153,10 +154,10 @@ public class SitemapServlet extends SlingSafeMethodsServlet {
         sitemapIndex.close();
     }
 
-    protected void doGetSitemap(@NotNull SlingHttpServletRequest request, @NotNull SlingHttpServletResponse response,
-            Resource topLevelSitemapRoot, String sitemapSelector) throws SitemapException, IOException {
+    protected void doGetSitemap(@NotNull SlingHttpServletResponse response, Resource topLevelSitemapRoot, String sitemapSelector)
+        throws SitemapException, IOException {
         Set<String> onDemandNames = generatorManager.getOnDemandNames(topLevelSitemapRoot);
-        if (onDemandNames.size() > 0) {
+        if (!onDemandNames.isEmpty()) {
             // resolve the actual sitemap root from the sitemapSelector
             Map<Resource, String> candidates = resolveSitemapRoots(topLevelSitemapRoot, sitemapSelector);
 

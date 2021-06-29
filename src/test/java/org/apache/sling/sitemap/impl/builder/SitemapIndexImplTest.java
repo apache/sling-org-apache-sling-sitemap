@@ -27,16 +27,15 @@ import java.time.Instant;
 import org.apache.sling.sitemap.SitemapException;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.sling.sitemap.impl.builder.SitemapImplTest.XML_HEADER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SitemapIndexImplTest extends AbstractBuilderTest {
+class SitemapIndexImplTest extends AbstractBuilderTest {
 
     private static final Instant DATETIME = Instant.ofEpochMilli(1622122594000L);
 
     @Test
-    public void testAfterCloseFails() throws IOException {
+    void testAfterCloseFails() throws IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapIndexImpl subject = new SitemapIndexImpl(writer);
@@ -51,7 +50,7 @@ public class SitemapIndexImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testIOExceptionWrapped() throws IOException {
+    void testIOExceptionWrapped() throws IOException {
         // given
         Writer writer = new FilterWriter(new StringWriter()) {
             @Override public void flush() throws IOException {
@@ -70,7 +69,7 @@ public class SitemapIndexImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testEmptyIndex() throws IOException {
+    void testEmptyIndex() throws IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapIndexImpl subject = new SitemapIndexImpl(writer);
@@ -86,7 +85,7 @@ public class SitemapIndexImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testAddSitemapNoLastmod() throws IOException, SitemapException {
+    void testAddSitemapNoLastmod() throws IOException, SitemapException {
         // given
         StringWriter writer = new StringWriter();
         SitemapIndexImpl subject = new SitemapIndexImpl(writer);
@@ -107,7 +106,7 @@ public class SitemapIndexImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    public void testAddSitemapWithLastmod() throws IOException, SitemapException {
+    void testAddSitemapWithLastmod() throws IOException, SitemapException {
         // given
         StringWriter writer = new StringWriter();
         SitemapIndexImpl subject = new SitemapIndexImpl(writer);

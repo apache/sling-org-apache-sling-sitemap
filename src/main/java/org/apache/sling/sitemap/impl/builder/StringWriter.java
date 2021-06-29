@@ -79,12 +79,12 @@ class StringWriter extends Writer {
 
     @Override
     public void flush() {
-
+        // this memory data structure must not be flushed
     }
 
     @Override
     public void close() {
-
+        // this memory data structure cannot not be closed
     }
 
     public void reset() {

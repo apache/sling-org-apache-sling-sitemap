@@ -35,14 +35,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import static org.apache.sling.sitemap.impl.builder.SitemapImplTest.XML_HEADER;
+import static org.apache.sling.sitemap.impl.builder.AbstractBuilderTest.XML_HEADER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class ResourceTreeSitemapGeneratorTest {
+class ResourceTreeSitemapGeneratorTest {
 
-    public final SlingContext context = new SlingContext();
+    final SlingContext context = new SlingContext();
 
     private final SitemapGenerator subject = new TestResourceTreeSitemapGenerator();
     private final ExtensionProviderManager extensionProviderManager = new ExtensionProviderManager();
@@ -52,7 +52,7 @@ public class ResourceTreeSitemapGeneratorTest {
     private Resource sitemapRoot;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         sitemapRoot = context.load()
                 .json("/ResourceTreeSitemapGeneratorTest/sitetree.json", "/content/site/de");
 
@@ -60,7 +60,7 @@ public class ResourceTreeSitemapGeneratorTest {
     }
 
     @Test
-    public void testSitemapContainsAllResourcesButJcrContent() throws SitemapException, IOException {
+    void testSitemapContainsAllResourcesButJcrContent() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl sitemap = new SitemapImpl(writer, extensionProviderManager);
@@ -82,7 +82,7 @@ public class ResourceTreeSitemapGeneratorTest {
     }
 
     @Test
-    public void testSitemapDoesNotContainsResourcesWithoutJcrContent() throws SitemapException, IOException {
+    void testSitemapDoesNotContainsResourcesWithoutJcrContent() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl sitemap = new SitemapImpl(writer, extensionProviderManager);
@@ -105,7 +105,7 @@ public class ResourceTreeSitemapGeneratorTest {
     }
 
     @Test
-    public void testSkipTo() throws SitemapException, IOException {
+    void testSkipTo() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl sitemap = new SitemapImpl(writer, extensionProviderManager);
