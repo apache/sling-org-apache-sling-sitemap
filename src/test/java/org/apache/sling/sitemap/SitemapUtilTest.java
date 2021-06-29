@@ -16,11 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.sitemap.common;
+package org.apache.sling.sitemap;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.sitemap.SitemapService;
+import org.apache.sling.sitemap.SitemapUtil;
 import org.apache.sling.testing.mock.sling.junit5.SlingContext;
 import org.apache.sling.testing.mock.sling.junit5.SlingContextExtension;
 import org.hamcrest.CustomMatcher;

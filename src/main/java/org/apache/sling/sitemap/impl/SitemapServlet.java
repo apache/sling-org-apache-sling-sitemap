@@ -24,9 +24,9 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.ServletResolverConstants;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.sitemap.SitemapException;
-import org.apache.sling.sitemap.common.SitemapLinkExternalizer;
-import org.apache.sling.sitemap.generator.SitemapGenerator;
-import org.apache.sling.sitemap.generator.SitemapGeneratorManager;
+import org.apache.sling.sitemap.spi.SitemapLinkExternalizer;
+import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
+import org.apache.sling.sitemap.SitemapGeneratorManager;
 import org.apache.sling.sitemap.impl.builder.SitemapImpl;
 import org.apache.sling.sitemap.impl.builder.SitemapIndexImpl;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static org.apache.sling.sitemap.common.SitemapUtil.*;
+import static org.apache.sling.sitemap.SitemapUtil.*;
 import static org.apache.sling.sitemap.impl.SitemapServlet.*;
 
 @Component(

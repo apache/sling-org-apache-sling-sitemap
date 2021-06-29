@@ -20,7 +20,7 @@ package org.apache.sling.sitemap;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.sitemap.builder.Sitemap;
-import org.apache.sling.sitemap.generator.SitemapGenerator;
+import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;

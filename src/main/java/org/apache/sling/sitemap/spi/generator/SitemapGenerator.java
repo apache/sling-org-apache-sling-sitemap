@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.sitemap.generator;
+package org.apache.sling.sitemap.spi.generator;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.sitemap.SitemapException;

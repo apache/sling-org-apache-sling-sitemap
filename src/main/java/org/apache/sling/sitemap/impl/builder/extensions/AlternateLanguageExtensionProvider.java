@@ -18,9 +18,9 @@
  */
 package org.apache.sling.sitemap.impl.builder.extensions;
 
-import org.apache.sling.sitemap.builder.extensions.AbstractExtension;
+import org.apache.sling.sitemap.spi.builder.AbstractExtension;
 import org.apache.sling.sitemap.builder.extensions.AlternateLanguageExtension;
-import org.apache.sling.sitemap.builder.extensions.ExtensionProvider;
+import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.service.component.annotations.Component;
 
@@ -30,14 +30,14 @@ import java.util.Locale;
 
 @Component(
         property = {
-                ExtensionProvider.PROPERTY_INTERFACE + "=org.apache.sling.sitemap.builder.extensions.AlternateLanguageExtension",
-                ExtensionProvider.PROPERTY_PREFIX + "=xhtml",
-                ExtensionProvider.PROPERTY_NAMESPACE + "=http://www.w3.org/1999/xhtml",
-                ExtensionProvider.PROPERTY_LOCAL_NAME + "=link",
-                ExtensionProvider.PROPERTY_EMPTY_TAG + "=true"
+                SitemapExtensionProvider.PROPERTY_INTERFACE + "=org.apache.sling.sitemap.builder.extensions.AlternateLanguageExtension",
+                SitemapExtensionProvider.PROPERTY_PREFIX + "=xhtml",
+                SitemapExtensionProvider.PROPERTY_NAMESPACE + "=http://www.w3.org/1999/xhtml",
+                SitemapExtensionProvider.PROPERTY_LOCAL_NAME + "=link",
+                SitemapExtensionProvider.PROPERTY_EMPTY_TAG + "=true"
         }
 )
-public class AlternateLanguageExtensionProvider implements ExtensionProvider {
+public class AlternateLanguageExtensionProvider implements SitemapExtensionProvider {
 
     @Override
     @NotNull

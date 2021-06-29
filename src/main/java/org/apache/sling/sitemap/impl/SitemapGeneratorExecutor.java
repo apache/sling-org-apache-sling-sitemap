@@ -31,8 +31,8 @@ import org.apache.sling.sitemap.SitemapException;
 import org.apache.sling.sitemap.SitemapService;
 import org.apache.sling.sitemap.builder.Sitemap;
 import org.apache.sling.sitemap.builder.Url;
-import org.apache.sling.sitemap.generator.SitemapGenerator;
-import org.apache.sling.sitemap.generator.SitemapGeneratorManager;
+import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
+import org.apache.sling.sitemap.SitemapGeneratorManager;
 import org.apache.sling.sitemap.impl.builder.SitemapImpl;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
 import org.jetbrains.annotations.NotNull;
@@ -40,9 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
-import org.osgi.service.event.EventProperties;
 import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
@@ -54,7 +51,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static org.apache.sling.sitemap.common.SitemapUtil.normalizeSitemapRoot;
+import static org.apache.sling.sitemap.SitemapUtil.normalizeSitemapRoot;
 
 @Component(
         service = JobExecutor.class,

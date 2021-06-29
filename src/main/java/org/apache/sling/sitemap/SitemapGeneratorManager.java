@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.sitemap.generator;
+package org.apache.sling.sitemap;
 
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 

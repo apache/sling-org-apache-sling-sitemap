@@ -21,8 +21,8 @@ package org.apache.sling.sitemap.impl.builder;
 import org.apache.sling.sitemap.SitemapException;
 import org.apache.sling.sitemap.builder.Extension;
 import org.apache.sling.sitemap.builder.Url;
-import org.apache.sling.sitemap.builder.extensions.AbstractExtension;
-import org.apache.sling.sitemap.builder.extensions.ExtensionProvider;
+import org.apache.sling.sitemap.spi.builder.AbstractExtension;
+import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
 import org.apache.sling.testing.mock.sling.junit5.SlingContext;
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +48,7 @@ public class UrlImplTest extends AbstractBuilderTest {
     @BeforeEach
     public void setup() {
         context.registerService(
-                ExtensionProvider.class, new TestExtensionProvider(),
+                SitemapExtensionProvider.class, new TestExtensionProvider(),
                 "extension.interface", TestExtension.class.getName(),
                 "extension.prefix", TestExtensionProvider.PREFIX,
                 "extension.namespace", TestExtensionProvider.NAMESPACE,
@@ -172,7 +172,7 @@ public class UrlImplTest extends AbstractBuilderTest {
         TestExtension setValue(String value);
     }
 
-    static class TestExtensionProvider implements ExtensionProvider {
+    static class TestExtensionProvider implements SitemapExtensionProvider {
 
         static String NAMESPACE = "http://localhost/schema/test/1.0";
         static String PREFIX = "tst";

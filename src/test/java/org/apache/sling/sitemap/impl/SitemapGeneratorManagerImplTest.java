@@ -19,7 +19,7 @@
 package org.apache.sling.sitemap.impl;
 
 import org.apache.sling.sitemap.SitemapService;
-import org.apache.sling.sitemap.generator.SitemapGenerator;
+import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
 import org.apache.sling.testing.mock.osgi.MockOsgi;
 import org.apache.sling.testing.mock.sling.junit5.SlingContext;
 import org.apache.sling.testing.mock.sling.junit5.SlingContextExtension;

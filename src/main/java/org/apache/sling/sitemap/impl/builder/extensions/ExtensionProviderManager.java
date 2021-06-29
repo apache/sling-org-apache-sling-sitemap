@@ -19,7 +19,7 @@
 package org.apache.sling.sitemap.impl.builder.extensions;
 
 import org.apache.sling.sitemap.builder.Extension;
-import org.apache.sling.sitemap.builder.extensions.ExtensionProvider;
+import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
@@ -34,7 +34,7 @@ import java.util.*;
         service = ExtensionProviderManager.class,
         reference = {
                 @Reference(
-                        service = ExtensionProvider.class,
+                        service = SitemapExtensionProvider.class,
                         name = "providers",
                         bind = "bindExtensionProvider",
                         unbind = "unbindExtensionProvider",
@@ -55,7 +55,7 @@ public class ExtensionProviderManager {
         this.bundleContext = bundleContext;
     }
 
-    protected void bindExtensionProvider(ServiceReference<ExtensionProvider> ref) {
+    protected void bindExtensionProvider(ServiceReference<SitemapExtensionProvider> ref) {
         try {
             namespaces = null;
             providers.put(ref, new Holder(ref));
@@ -64,7 +64,7 @@ public class ExtensionProviderManager {
         }
     }
 
-    protected void unbindExtensionProvider(ServiceReference<ExtensionProvider> ref) {
+    protected void unbindExtensionProvider(ServiceReference<SitemapExtensionProvider> ref) {
         Holder holder = providers.remove(ref);
 
         if (holder != null && holder.provider != null) {
@@ -104,27 +104,27 @@ public class ExtensionProviderManager {
     }
 
     private class Holder {
-        private final ServiceReference<ExtensionProvider> ref;
+        private final ServiceReference<SitemapExtensionProvider> ref;
         private final String extensionInterface;
         private final String prefix;
         private final String namespace;
         private final String localName;
         private final boolean emptyTag;
 
-        private ExtensionProvider provider;
+        private SitemapExtensionProvider provider;
 
-        private Holder(ServiceReference<ExtensionProvider> ref) {
+        private Holder(ServiceReference<SitemapExtensionProvider> ref) {
             this.ref = ref;
             prefix = Objects
-                    .requireNonNull((String) ref.getProperty(ExtensionProvider.PROPERTY_PREFIX), "prefix missing");
+                    .requireNonNull((String) ref.getProperty(SitemapExtensionProvider.PROPERTY_PREFIX), "prefix missing");
             namespace = Objects
-                    .requireNonNull((String) ref.getProperty(ExtensionProvider.PROPERTY_NAMESPACE), "namespace missing");
+                    .requireNonNull((String) ref.getProperty(SitemapExtensionProvider.PROPERTY_NAMESPACE), "namespace missing");
             localName = Objects
-                    .requireNonNull((String) ref.getProperty(ExtensionProvider.PROPERTY_LOCAL_NAME), "local name missing");
+                    .requireNonNull((String) ref.getProperty(SitemapExtensionProvider.PROPERTY_LOCAL_NAME), "local name missing");
             extensionInterface = Objects
-                    .requireNonNull((String) ref.getProperty(ExtensionProvider.PROPERTY_INTERFACE), "prefix missing");
+                    .requireNonNull((String) ref.getProperty(SitemapExtensionProvider.PROPERTY_INTERFACE), "prefix missing");
 
-            Object emptyTagProp = ref.getProperty(ExtensionProvider.PROPERTY_EMPTY_TAG);
+            Object emptyTagProp = ref.getProperty(SitemapExtensionProvider.PROPERTY_EMPTY_TAG);
 
             if (emptyTagProp instanceof Boolean) {
                 emptyTag = (Boolean) emptyTagProp;
@@ -136,7 +136,7 @@ public class ExtensionProviderManager {
             }
         }
 
-        private ExtensionProvider getProvider() {
+        private SitemapExtensionProvider getProvider() {
             if (provider == null) {
                 provider = bundleContext.getService(ref);
             }

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.sitemap.generator;
+package org.apache.sling.sitemap.spi.generator;
 
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.resource.Resource;
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static org.apache.sling.sitemap.common.SitemapUtil.isSitemapRoot;
+import static org.apache.sling.sitemap.SitemapUtil.isSitemapRoot;
 
 /**
  * A default implementation of {@link SitemapGenerator} that traverses a resource tree.

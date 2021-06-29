@@ -16,26 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.sitemap.builder.extensions;
+package org.apache.sling.sitemap.spi.builder;
 
 import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ConsumerType;
 
 /**
  * To provide an implementation for a defined sub type of {@link org.apache.sling.sitemap.builder.Extension} an
- * {@link ExtensionProvider} needs to be registered as OSGI service.
+ * {@link SitemapExtensionProvider} needs to be registered as OSGI service.
  * <p>
  * In order to hide the implementation detail of an extension from the the consumer API, the return type of
- * {@link ExtensionProvider#newInstance()} is {@link AbstractExtension}, the provider facing API of the extension.
+ * {@link SitemapExtensionProvider#newInstance()} is {@link AbstractExtension}, the provider facing API of the extension.
  * However to use the returned instance, it has to also implement the extension sub type interface and be registered
  * with it's full qualified class name.
  * <p>
- * There may be multiple {@link ExtensionProvider}s using the same namespace. If so the one with the highest ranking
+ * There may be multiple {@link SitemapExtensionProvider}s using the same namespace. If so the one with the highest ranking
  * according to the OSGI specification will define the namespace's prefix, which means that lower ranking services
  * may use another prefix then they were registered with.
  */
 @ConsumerType
-public interface ExtensionProvider {
+public interface SitemapExtensionProvider {
 
     /**
      * The mandatory property to set to the {@link org.apache.sling.sitemap.builder.Extension} sub-type.
@@ -60,7 +60,7 @@ public interface ExtensionProvider {
     String PROPERTY_EMPTY_TAG = "extension.emptyTag";
 
     /**
-     * Returns a new instance of the extension provided by the {@link ExtensionProvider}.
+     * Returns a new instance of the extension provided by the {@link SitemapExtensionProvider}.
      *
      * @return
      */

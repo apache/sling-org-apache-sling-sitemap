@@ -21,9 +21,9 @@ package org.apache.sling.sitemap.impl;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.sitemap.SitemapInfo;
 import org.apache.sling.sitemap.SitemapService;
-import org.apache.sling.sitemap.common.SitemapLinkExternalizer;
-import org.apache.sling.sitemap.common.SitemapUtil;
-import org.apache.sling.sitemap.generator.SitemapGeneratorManager;
+import org.apache.sling.sitemap.spi.SitemapLinkExternalizer;
+import org.apache.sling.sitemap.SitemapUtil;
+import org.apache.sling.sitemap.SitemapGeneratorManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static org.apache.sling.sitemap.common.SitemapUtil.*;
+import static org.apache.sling.sitemap.SitemapUtil.*;
 
 @Component(service = SitemapService.class)
 public class SitemapServiceImpl implements SitemapService {

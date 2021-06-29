@@ -26,7 +26,7 @@ import org.apache.sling.commons.scheduler.Scheduler;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
 import org.apache.sling.serviceusermapping.ServiceUserMapped;
-import org.apache.sling.sitemap.generator.SitemapGeneratorManager;
+import org.apache.sling.sitemap.SitemapGeneratorManager;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.apache.sling.sitemap.common.SitemapUtil.findSitemapRoots;
+import static org.apache.sling.sitemap.SitemapUtil.findSitemapRoots;
 
 @Component(
         service = {SitemapScheduler.class, Runnable.class},

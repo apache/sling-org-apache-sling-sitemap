@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.sitemap.builder.extensions;
+package org.apache.sling.sitemap.spi.builder;
 
 import org.apache.sling.sitemap.builder.Extension;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 /**
- * The producer API of an extension.
+ * The producer API of an {@link Extension}.
  */
 @ConsumerType
 public abstract class AbstractExtension implements Extension {
@@ -36,8 +36,7 @@ public abstract class AbstractExtension implements Extension {
      * <p>
      * The extension must not open/close its own surrounding tag. This is done by the caller in order to guarantee
      * proper isolation between the core implementation and the extensions. Furthermore, when an extension fails and
-     * throws an {@link XMLStreamException} the extensions output will simply be discarded but the sitemap generation
-     * will not fail.
+     * throws an {@link XMLStreamException} the extensions output will be discarded but the sitemap generation will not fail.
      *
      * @param writer
      * @throws XMLStreamException

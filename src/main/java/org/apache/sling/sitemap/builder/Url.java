@@ -18,6 +18,7 @@
  */
 package org.apache.sling.sitemap.builder;
 
+import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
@@ -68,7 +69,7 @@ public interface Url {
      * @param extensionInterface the interface of the extension to add
      * @param <T>                the type of the extension
      * @return an instance of the given interface, or null when no
-     * {@link org.apache.sling.sitemap.builder.extensions.ExtensionProvider} is registered for the given interface
+     * {@link SitemapExtensionProvider} is registered for the given interface
      */
     @Nullable <T extends Extension> T addExtension(Class<T> extensionInterface);
 

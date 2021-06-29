@@ -17,6 +17,6 @@
  * under the License.
  */
 @Version("1.0.0")
-package org.apache.sling.sitemap.generator;
+package org.apache.sling.sitemap.spi.generator;
 
 import org.osgi.annotation.versioning.Version;

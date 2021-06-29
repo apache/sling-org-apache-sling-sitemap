@@ -27,8 +27,8 @@ import org.apache.sling.commons.metrics.Counter;
 import org.apache.sling.commons.metrics.MetricsService;
 import org.apache.sling.commons.scheduler.Scheduler;
 import org.apache.sling.serviceusermapping.ServiceUserMapped;
-import org.apache.sling.sitemap.common.SitemapUtil;
-import org.apache.sling.sitemap.generator.SitemapGeneratorManager;
+import org.apache.sling.sitemap.SitemapUtil;
+import org.apache.sling.sitemap.SitemapGeneratorManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.*;
@@ -49,7 +49,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static org.apache.sling.sitemap.common.SitemapUtil.*;
+import static org.apache.sling.sitemap.SitemapUtil.*;
 import static org.apache.sling.sitemap.impl.SitemapEventUtil.newPurgeEvent;
 import static org.apache.sling.sitemap.impl.SitemapEventUtil.newUpdateEvent;
 

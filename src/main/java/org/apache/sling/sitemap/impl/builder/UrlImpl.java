@@ -21,7 +21,7 @@ package org.apache.sling.sitemap.impl.builder;
 import org.apache.sling.sitemap.SitemapException;
 import org.apache.sling.sitemap.builder.Extension;
 import org.apache.sling.sitemap.builder.Url;
-import org.apache.sling.sitemap.builder.extensions.AbstractExtension;
+import org.apache.sling.sitemap.spi.builder.AbstractExtension;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionFactory;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
 import org.jetbrains.annotations.NotNull;

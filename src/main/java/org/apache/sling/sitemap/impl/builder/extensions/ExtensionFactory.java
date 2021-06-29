@@ -18,19 +18,19 @@
  */
 package org.apache.sling.sitemap.impl.builder.extensions;
 
-import org.apache.sling.sitemap.builder.extensions.AbstractExtension;
-import org.apache.sling.sitemap.builder.extensions.ExtensionProvider;
+import org.apache.sling.sitemap.spi.builder.AbstractExtension;
+import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.jetbrains.annotations.NotNull;
 
 public class ExtensionFactory {
 
-    private final ExtensionProvider provider;
+    private final SitemapExtensionProvider provider;
     private final String namespace;
     private final String prefix;
     private final String localName;
     private final boolean emptyTag;
 
-    ExtensionFactory(ExtensionProvider provider,
+    ExtensionFactory(SitemapExtensionProvider provider,
                      String namespace, String prefix, String localName, boolean emptyTag) {
         this.provider = provider;
         this.namespace = namespace;

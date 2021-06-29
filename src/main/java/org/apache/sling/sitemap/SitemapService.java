@@ -19,7 +19,7 @@
 package org.apache.sling.sitemap;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.sitemap.common.SitemapLinkExternalizer;
+import org.apache.sling.sitemap.spi.SitemapLinkExternalizer;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 

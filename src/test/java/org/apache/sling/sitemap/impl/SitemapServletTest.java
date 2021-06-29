@@ -24,7 +24,7 @@ import org.apache.sling.event.jobs.JobManager;
 import org.apache.sling.serviceusermapping.ServiceUserMapped;
 import org.apache.sling.sitemap.SitemapService;
 import org.apache.sling.sitemap.TestResourceTreeSitemapGenerator;
-import org.apache.sling.sitemap.generator.SitemapGenerator;
+import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
 import org.apache.sling.sitemap.impl.builder.SitemapImplTest;
 import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
 import org.apache.sling.testing.mock.jcr.MockJcr;

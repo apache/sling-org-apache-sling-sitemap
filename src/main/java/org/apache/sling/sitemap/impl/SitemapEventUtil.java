@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.sling.sitemap.generator.SitemapGenerator.*;
+import static org.apache.sling.sitemap.spi.generator.SitemapGenerator.*;
 
 /**
  * A utility class to create new {@link Event}s for sitemap storage operations.

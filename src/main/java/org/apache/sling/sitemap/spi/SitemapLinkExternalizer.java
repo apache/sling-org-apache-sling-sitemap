@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.sitemap.common;
+package org.apache.sling.sitemap.spi;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -33,13 +33,14 @@ public interface SitemapLinkExternalizer {
      * A default implementation of the {@link SitemapLinkExternalizer} which may be used as fallback.
      */
     SitemapLinkExternalizer DEFAULT = new SitemapLinkExternalizer() {
+        @Nullable
         @Override
-        public @Nullable String externalize(SlingHttpServletRequest context, String uri) {
+        public String externalize(SlingHttpServletRequest context, String uri) {
             return context.getResourceResolver().map(context, uri);
         }
 
         @Override
-        public @Nullable String externalize(Resource resource) {
+        public String externalize(Resource resource) {
             return resource.getResourceResolver().map(resource.getPath());
         }
     };

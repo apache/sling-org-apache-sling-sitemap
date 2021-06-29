@@ -27,7 +27,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.Scheduler;
 import org.apache.sling.sitemap.SitemapInfo;
 import org.apache.sling.sitemap.SitemapService;
-import org.apache.sling.sitemap.common.SitemapUtil;
+import org.apache.sling.sitemap.SitemapUtil;
 import org.apache.sling.sitemap.impl.SitemapServiceConfiguration;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.framework.BundleContext;

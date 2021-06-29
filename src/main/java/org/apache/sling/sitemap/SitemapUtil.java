@@ -16,15 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.sling.sitemap.common;
+package org.apache.sling.sitemap;
 
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.util.ISO9075;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.sitemap.SitemapService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.osgi.annotation.versioning.ProviderType;
 
 import javax.jcr.query.Query;
 import java.util.*;
@@ -32,7 +32,8 @@ import java.util.*;
 /**
  * A utility class to give access to common functionality used for sitemaps.
  */
-public class SitemapUtil {
+@ProviderType
+public final class SitemapUtil {
 
     private static final String JCR_SYSTEM_PATH = "/" + JcrConstants.JCR_SYSTEM + "/";
 
