@@ -23,13 +23,13 @@
     <parent>
         <groupId>org.apache.sling</groupId>
         <artifactId>sling-bundle-parent</artifactId>
-        <version>41</version>
+        <version>43</version>
     </parent>
 
     <artifactId>org.apache.sling.sitemap</artifactId>
     <version>1.0.1-SNAPSHOT</version>
     <name>Apache Sling Sitemap</name>
-    <description>An Apache Sling extension to generate xml sitemaps.</description>
+    <description>An Apache Sling extension to generate xml sitemaps</description>
 
     <scm>
         <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-sitemap.git</connection>
@@ -281,27 +281,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>autoInstallBundle</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.sling</groupId>
-                        <artifactId>sling-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>install-bundle</id>
-                                <goals>
-                                    <goal>install</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
