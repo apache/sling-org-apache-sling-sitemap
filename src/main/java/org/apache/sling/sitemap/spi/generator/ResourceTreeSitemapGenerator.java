@@ -42,7 +42,7 @@ import static org.apache.sling.sitemap.SitemapUtil.isSitemapRoot;
  * follows through only on content that is not below the "jcr:content" or any other sitemap root.
  * <p>
  * This implementation keeps track of the traversal's state in the
- * {@link SitemapGenerator.GenerationContext}. It is capable to continue from a previous
+ * {@link Context}. It is capable to continue from a previous
  * persisted state, when the generation got aborted.
  */
 @ConsumerType
@@ -52,7 +52,7 @@ public abstract class ResourceTreeSitemapGenerator implements SitemapGenerator {
 
     @Override
     public final void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap,
-                               @NotNull GenerationContext context) throws SitemapException {
+                               @NotNull SitemapGenerator.Context context) throws SitemapException {
         String lastPath = context.getProperty(PROPERTY_LAST_PATH, String.class);
         for (Resource descendant : (Iterable<? extends Resource>) traverse(sitemapRoot, lastPath)::iterator) {
             addResource(name, sitemap, descendant);

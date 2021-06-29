@@ -69,7 +69,7 @@ public abstract class TestGenerator implements SitemapGenerator {
     }
 
     @Override
-    public void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap, @NotNull GenerationContext context) throws SitemapException {
+    public void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap, @NotNull SitemapGenerator.Context context) throws SitemapException {
         fail();
     }
 }

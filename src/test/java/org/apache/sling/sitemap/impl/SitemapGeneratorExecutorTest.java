@@ -393,7 +393,7 @@ public class SitemapGeneratorExecutorTest {
                 "http://example.com/page2.html"
         ) {
             @Override
-            public void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap, @NotNull GenerationContext context) throws SitemapException {
+            public void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap, @NotNull SitemapGenerator.Context context) throws SitemapException {
                 try {
                     super.generate(sitemapRoot, name, sitemap, context);
                 } finally {
@@ -437,7 +437,7 @@ public class SitemapGeneratorExecutorTest {
         private SitemapException ex;
 
         @Override
-        public void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap, @NotNull GenerationContext context) throws SitemapException {
+        public void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap, @NotNull SitemapGenerator.Context context) throws SitemapException {
             throw ex;
         }
     }
@@ -467,7 +467,7 @@ public class SitemapGeneratorExecutorTest {
 
         @Override
         public void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap,
-                             @NotNull GenerationContext context) throws SitemapException {
+                             @NotNull SitemapGenerator.Context context) throws SitemapException {
             int i = context.getProperty("i", 0);
             for (; i < locations.length; i++) {
                 context.setProperty("i", i);

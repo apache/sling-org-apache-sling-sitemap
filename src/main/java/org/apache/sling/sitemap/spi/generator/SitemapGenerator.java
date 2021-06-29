@@ -18,6 +18,9 @@
  */
 package org.apache.sling.sitemap.spi.generator;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.sitemap.SitemapException;
 import org.apache.sling.sitemap.SitemapService;
@@ -26,9 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ConsumerType;
 
-import java.util.Collections;
-import java.util.Set;
-
 /**
  * {@link SitemapGenerator} implementations are responsible to generate one or many sitemaps for a given sitemap root
  * {@link Resource}. When a {@link SitemapGenerator} generates multiple sitemaps for a given {@link Resource} it has to
@@ -36,7 +36,7 @@ import java.util.Set;
  * that any of those names should be served on-demand by returning a subset of names for
  * {@link SitemapGenerator#getOnDemandNames(Resource)}.
  * <p>
- * {@link SitemapGenerator#generate(Resource, String, Sitemap, GenerationContext)} may be called for each name and
+ * {@link SitemapGenerator#generate(Resource, String, Sitemap, Context)} may be called for each name and
  * each sitemap root {@link Resource}, the implementation returned an non-empty {@link Set} of names for.
  * <p>
  * It is possible to register multiple {@link SitemapGenerator}s for a single name. In this case the one with the
@@ -106,7 +106,7 @@ public interface SitemapGenerator {
     /**
      * Generates a {@link Sitemap} with the given name at the given {@link Resource}.
      * <p>
-     * This process may be stateful and the given {@link GenerationContext} can be used to keep track of the state. For
+     * This process may be stateful and the given {@link Context} can be used to keep track of the state. For
      * example a traversal that keeps track on the last {@link Resource} added to the {@link Sitemap}.
      *
      * @param sitemapRoot the root at which the sitemap should be created
@@ -116,14 +116,14 @@ public interface SitemapGenerator {
      * @param context     the context under which the sitemap is generated
      * @throws SitemapException may be thrown in unrecoverable exceptional cases
      */
-    void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap,
-                  @NotNull GenerationContext context) throws SitemapException;
+    void generate(@NotNull Resource sitemapRoot, @NotNull String name, @NotNull Sitemap sitemap, @NotNull SitemapGenerator.Context context)
+        throws SitemapException;
 
     /**
      * A context object that gives the {@link SitemapGenerator} access to additional configurations and methods to
      * track state.
      */
-    interface GenerationContext {
+    interface Context {
 
         @Nullable <T> T getProperty(@NotNull String name, @NotNull Class<T> cls);
 

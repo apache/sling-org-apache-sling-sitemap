@@ -61,7 +61,7 @@ public class SitemapServlet extends SlingSafeMethodsServlet {
     static final String SITEMAP_EXTENSION = "xml";
 
     private static final Logger LOG = LoggerFactory.getLogger(SitemapServlet.class);
-    private static SitemapGenerator.GenerationContext NOOP_CONTEXT = new SitemapGenerator.GenerationContext() {
+    private static SitemapGenerator.Context NOOP_CONTEXT = new SitemapGenerator.Context() {
         @Nullable
         @Override
         public <T> T getProperty(@NotNull String name, @NotNull Class<T> cls) {

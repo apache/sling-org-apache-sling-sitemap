@@ -134,7 +134,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
             throws SitemapException, IOException {
         try {
             CopyableByteArrayOutputStream buffer = new CopyableByteArrayOutputStream();
-            GenerationContextImpl genCtxt = new GenerationContextImpl();
+            Context genCtxt = new Context();
 
             // prefill the buffer with existing data from storage
             ValueMap state = storage.getState(res, name);
@@ -266,7 +266,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
         private final Resource sitemapRoot;
         private final String name;
         private final JobExecutionContext jobContext;
-        private final GenerationContextImpl generationContext;
+        private final Context generatorContext;
         private final List<String> files = new ArrayList<>(1);
         private final CopyableByteArrayOutputStream buffer;
         private final CopyableByteArrayOutputStream overflowBuffer = new CopyableByteArrayOutputStream();
@@ -275,13 +275,13 @@ public class SitemapGeneratorExecutor implements JobExecutor {
         private StatefulSitemap currentSitemap;
 
         MultiFileSitemap(Resource sitemapRoot, String name, int fileIndex, CopyableByteArrayOutputStream buffer,
-                GenerationContextImpl generationContext, JobExecutionContext jobContext) throws IOException {
+                Context generatorContext, JobExecutionContext jobContext) throws IOException {
             this.sitemapRoot = sitemapRoot;
             this.name = name;
             this.fileIndex = fileIndex;
             this.buffer = buffer;
             this.jobContext = jobContext;
-            this.generationContext = generationContext;
+            this.generatorContext = generatorContext;
             this.currentSitemap = newSitemap();
         }
 
@@ -304,7 +304,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
         }
 
         private StatefulSitemap newSitemap() throws IOException {
-            return new StatefulSitemap(sitemapRoot, name, buffer, jobContext, generationContext);
+            return new StatefulSitemap(sitemapRoot, name, buffer, jobContext, generatorContext);
         }
 
         private void closeSitemap() throws IOException {
@@ -316,7 +316,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
             }
             String path = storage.writeSitemap(sitemapRoot, name, buffer.copy(), fileIndex, buffer.size(), urlCount);
             // increment the file index for the next sitemap and store it in the context
-            generationContext.data.put(SitemapStorage.PN_SITEMAP_FILE_INDEX, ++fileIndex);
+            generatorContext.data.put(SitemapStorage.PN_SITEMAP_FILE_INDEX, ++fileIndex);
             files.add(path);
         }
 
@@ -364,19 +364,19 @@ public class SitemapGeneratorExecutor implements JobExecutor {
         private final String name;
         private final CopyableByteArrayOutputStream buffer;
         private final JobExecutionContext jobContext;
-        private final GenerationContextImpl generationContext;
+        private final Context generatorContext;
 
         private int urlCount = 0;
         private int writtenUrls = 0;
 
         StatefulSitemap(Resource sitemapRoot, String name, CopyableByteArrayOutputStream buffer,
-                JobExecutionContext jobContext, GenerationContextImpl generationContext) throws IOException {
+                JobExecutionContext jobContext, Context generatorContext) throws IOException {
             super(new OutputStreamWriter(buffer, StandardCharsets.UTF_8), extensionProviderManager, buffer.size() == 0);
             this.sitemapRoot = sitemapRoot;
             this.name = name;
             this.buffer = buffer;
             this.jobContext = jobContext;
-            this.generationContext = generationContext;
+            this.generatorContext = generatorContext;
         }
 
         @NotNull
@@ -398,8 +398,8 @@ public class SitemapGeneratorExecutor implements JobExecutor {
                     // make sure the buffer has all data from the writer
                     out.flush();
                     // copy the state and add the buffer's data
-                    Map<String, Object> copy = new HashMap<>(generationContext.data.size() + 1);
-                    copy.putAll(generationContext.data);
+                    Map<String, Object> copy = new HashMap<>(generatorContext.data.size() + 1);
+                    copy.putAll(generatorContext.data);
                     copy.put(SitemapStorage.PN_SITEMAP_ENTRIES, urlCount);
                     copy.put(JcrConstants.JCR_DATA, buffer.copy());
                     // write the state and reset the counter for the next iteration
@@ -413,7 +413,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
         }
     }
 
-    private class GenerationContextImpl implements SitemapGenerator.GenerationContext {
+    private static class Context implements SitemapGenerator.Context {
 
         private final ValueMap data = new ValueMapDecorator(new HashMap<>());
 
