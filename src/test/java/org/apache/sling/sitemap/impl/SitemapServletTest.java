@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class SitemapServletTest {
+class SitemapServletTest {
 
     final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
 

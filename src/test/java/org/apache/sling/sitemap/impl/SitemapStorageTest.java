@@ -58,7 +58,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({SlingContextExtension.class, MockitoExtension.class})
-public class SitemapStorageTest {
+class SitemapStorageTest {
 
     final SlingContext context = new SlingContext();
 

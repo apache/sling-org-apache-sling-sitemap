@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AbstractBuilderTest {
+public abstract class AbstractBuilderTest {
 
     public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
