@@ -46,35 +46,6 @@ import org.osgi.annotation.versioning.ConsumerType;
 public interface SitemapGenerator {
 
     /**
-     * The background generation will send events with that topic right after a generated sitemap was persisted.
-     */
-    String EVENT_TOPIC_SITEMAP_UPDATED = "org/apache/sling/sitemap/UPDATED";
-    /**
-     * The background cleanup will send events with that topic right after an obsolete sitemap file was purged.
-     */
-    String EVENT_TOPIC_SITEMAP_PURGED = "org/apache/sling/sitemap/PURGED";
-    /**
-     * The event property storing the generated sitemap's root path.
-     */
-    String EVENT_PROPERTY_SITEMAP_ROOT = "sitemap.root";
-    /**
-     * The event property storing the generated sitemap's name.
-     */
-    String EVENT_PROPERTY_SITEMAP_NAME = "sitemap.name";
-    /**
-     * The event property storing the generated sitemap's count of urls.
-     */
-    String EVENT_PROPERTY_SITEMAP_URLS = "sitemap.urls";
-    /**
-     * The event property storing the generated sitemap's storage path.
-     */
-    String EVENT_PROPERTY_SITEMAP_STORAGE_PATH = "sitemap.storagePath";
-    /**
-     * The event property storing the generated sitemap's binary size.
-     */
-    String EVENT_PROPERTY_SITEMAP_STORAGE_SIZE = "sitemap.storageSize";
-
-    /**
      * Returns a {@link Set} of sitemap names this {@link SitemapGenerator} can generate for a particular sitemap
      * root {@link Resource}. If the implementation does not generate a sitemap for a particular root it must return an
      * empty {@link Set}, if it does but does not differentiate by name, it must return a {@link Set} containing only

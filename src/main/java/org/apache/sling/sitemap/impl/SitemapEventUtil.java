@@ -19,6 +19,7 @@
 package org.apache.sling.sitemap.impl;
 
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.sitemap.SitemapService;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventProperties;
 
@@ -26,12 +27,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.sling.sitemap.spi.generator.SitemapGenerator.*;
-
 /**
  * A utility class to create new {@link Event}s for sitemap storage operations.
  */
-class SitemapEventUtil {
+final class SitemapEventUtil {
 
     private SitemapEventUtil() {
         super();
@@ -39,16 +38,16 @@ class SitemapEventUtil {
 
     static Event newUpdateEvent(SitemapStorageInfo storageInfo, Resource sitemapRoot) {
         Map<String, Object> props = new HashMap<>(5);
-        props.put(EVENT_PROPERTY_SITEMAP_NAME, storageInfo.getName());
-        props.put(EVENT_PROPERTY_SITEMAP_ROOT, sitemapRoot.getPath());
-        props.put(EVENT_PROPERTY_SITEMAP_URLS, storageInfo.getEntries());
-        props.put(EVENT_PROPERTY_SITEMAP_STORAGE_PATH, storageInfo.getPath());
-        props.put(EVENT_PROPERTY_SITEMAP_STORAGE_SIZE, storageInfo.getSize());
-        return new Event(EVENT_TOPIC_SITEMAP_UPDATED, new EventProperties(props));
+        props.put(SitemapService.EVENT_PROPERTY_SITEMAP_NAME, storageInfo.getName());
+        props.put(SitemapService.EVENT_PROPERTY_SITEMAP_ROOT, sitemapRoot.getPath());
+        props.put(SitemapService.EVENT_PROPERTY_SITEMAP_URLS, storageInfo.getEntries());
+        props.put(SitemapService.EVENT_PROPERTY_SITEMAP_STORAGE_PATH, storageInfo.getPath());
+        props.put(SitemapService.EVENT_PROPERTY_SITEMAP_STORAGE_SIZE, storageInfo.getSize());
+        return new Event(SitemapService.EVENT_TOPIC_SITEMAP_UPDATED, new EventProperties(props));
     }
 
     static Event newPurgeEvent(String path) {
-        Map<String, Object> properties = Collections.singletonMap(EVENT_PROPERTY_SITEMAP_STORAGE_PATH, path);
-        return new Event(EVENT_TOPIC_SITEMAP_PURGED, new EventProperties(properties));
+        Map<String, Object> properties = Collections.singletonMap(SitemapService.EVENT_PROPERTY_SITEMAP_STORAGE_PATH, path);
+        return new Event(SitemapService.EVENT_TOPIC_SITEMAP_PURGED, new EventProperties(properties));
     }
 }

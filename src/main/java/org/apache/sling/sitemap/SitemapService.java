@@ -19,7 +19,7 @@
 package org.apache.sling.sitemap;
 
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.sitemap.spi.SitemapLinkExternalizer;
+import org.apache.sling.sitemap.spi.common.SitemapLinkExternalizer;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -36,16 +36,42 @@ public interface SitemapService {
      * {@link Resource} or to a {@link Resource}'s jcr:content child.
      */
     String PROPERTY_SITEMAP_ROOT = "sling:sitemapRoot";
-
     /**
      * The default name used for (unnamed) sitemaps.
      */
     String DEFAULT_SITEMAP_NAME = "<default>";
-
     /**
      * The name used for sitemap indexes.
      */
     String SITEMAP_INDEX_NAME = "<sitemap-index>";
+    /**
+     * The background generation will send events with that topic right after a generated sitemap was persisted.
+     */
+    String EVENT_TOPIC_SITEMAP_UPDATED = "org/apache/sling/sitemap/UPDATED";
+    /**
+     * The background cleanup will send events with that topic right after an obsolete sitemap file was purged.
+     */
+    String EVENT_TOPIC_SITEMAP_PURGED = "org/apache/sling/sitemap/PURGED";
+    /**
+     * The event property storing the generated sitemap's root path.
+     */
+    String EVENT_PROPERTY_SITEMAP_ROOT = "sitemap.root";
+    /**
+     * The event property storing the generated sitemap's name.
+     */
+    String EVENT_PROPERTY_SITEMAP_NAME = "sitemap.name";
+    /**
+     * The event property storing the generated sitemap's count of urls.
+     */
+    String EVENT_PROPERTY_SITEMAP_URLS = "sitemap.urls";
+    /**
+     * The event property storing the generated sitemap's storage path.
+     */
+    String EVENT_PROPERTY_SITEMAP_STORAGE_PATH = "sitemap.storagePath";
+    /**
+     * The event property storing the generated sitemap's binary size.
+     */
+    String EVENT_PROPERTY_SITEMAP_STORAGE_SIZE = "sitemap.storageSize";
 
     /**
      * Returns the configured maximum size (bytes) a sitemap must not exceed.

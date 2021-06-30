@@ -21,7 +21,7 @@ package org.apache.sling.sitemap.impl;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.sitemap.SitemapInfo;
 import org.apache.sling.sitemap.SitemapService;
-import org.apache.sling.sitemap.spi.SitemapLinkExternalizer;
+import org.apache.sling.sitemap.spi.common.SitemapLinkExternalizer;
 import org.apache.sling.sitemap.SitemapUtil;
 import org.apache.sling.sitemap.SitemapGeneratorManager;
 import org.jetbrains.annotations.NotNull;

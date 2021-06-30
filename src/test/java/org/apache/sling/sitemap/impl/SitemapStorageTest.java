@@ -245,8 +245,8 @@ class SitemapStorageTest {
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
         ));
         context.registerService(EventHandler.class, capturedEvents::add, EventConstants.EVENT_TOPIC, new String[]{
-                SitemapGenerator.EVENT_TOPIC_SITEMAP_UPDATED,
-                SitemapGenerator.EVENT_TOPIC_SITEMAP_PURGED
+                SitemapService.EVENT_TOPIC_SITEMAP_UPDATED,
+                SitemapService.EVENT_TOPIC_SITEMAP_PURGED
         });
 
         // when
@@ -266,8 +266,8 @@ class SitemapStorageTest {
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
         ));
         context.registerService(EventHandler.class, capturedEvents::add, EventConstants.EVENT_TOPIC, new String[]{
-                SitemapGenerator.EVENT_TOPIC_SITEMAP_UPDATED,
-                SitemapGenerator.EVENT_TOPIC_SITEMAP_PURGED
+                SitemapService.EVENT_TOPIC_SITEMAP_UPDATED,
+                SitemapService.EVENT_TOPIC_SITEMAP_PURGED
         });
 
         // when
@@ -281,8 +281,8 @@ class SitemapStorageTest {
         System.out.println(capturedEvents.stream().map(Event::toString).collect(Collectors.joining(",")));
         assertThat(capturedEvents, hasSize(2));
         assertThat(capturedEvents, hasItems(
-                sitemapEvent(SitemapGenerator.EVENT_TOPIC_SITEMAP_UPDATED, storagePath),
-                sitemapEvent(SitemapGenerator.EVENT_TOPIC_SITEMAP_PURGED, storagePath)
+                sitemapEvent(SitemapService.EVENT_TOPIC_SITEMAP_UPDATED, storagePath),
+                sitemapEvent(SitemapService.EVENT_TOPIC_SITEMAP_PURGED, storagePath)
         ));
     }
 
@@ -294,8 +294,8 @@ class SitemapStorageTest {
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE
         ));
         context.registerService(EventHandler.class, capturedEvents::add, EventConstants.EVENT_TOPIC, new String[]{
-                SitemapGenerator.EVENT_TOPIC_SITEMAP_UPDATED,
-                SitemapGenerator.EVENT_TOPIC_SITEMAP_PURGED
+                SitemapService.EVENT_TOPIC_SITEMAP_UPDATED,
+                SitemapService.EVENT_TOPIC_SITEMAP_PURGED
         });
 
         // when
@@ -307,8 +307,8 @@ class SitemapStorageTest {
         // then
         assertThat(capturedEvents, hasSize(2));
         assertThat(capturedEvents, hasItems(
-                sitemapEvent(SitemapGenerator.EVENT_TOPIC_SITEMAP_UPDATED, storagePath),
-                sitemapEvent(SitemapGenerator.EVENT_TOPIC_SITEMAP_PURGED, storagePath)
+                sitemapEvent(SitemapService.EVENT_TOPIC_SITEMAP_UPDATED, storagePath),
+                sitemapEvent(SitemapService.EVENT_TOPIC_SITEMAP_PURGED, storagePath)
         ));
     }
 
@@ -335,7 +335,7 @@ class SitemapStorageTest {
                 return o instanceof Event
                         && topic.equals(((Event) o).getTopic())
                         && storagePath.equals(
-                        ((Event) o).getProperty(SitemapGenerator.EVENT_PROPERTY_SITEMAP_STORAGE_PATH));
+                        ((Event) o).getProperty(SitemapService.EVENT_PROPERTY_SITEMAP_STORAGE_PATH));
             }
         };
     }
