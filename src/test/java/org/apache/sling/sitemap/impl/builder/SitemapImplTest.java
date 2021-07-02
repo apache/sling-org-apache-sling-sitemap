@@ -119,7 +119,7 @@ class SitemapImplTest extends AbstractBuilderTest {
         // given
         Writer throwingWriter = new Writer() {
             @Override
-            public void write(@NotNull char[] cbuf, int off, int len) throws IOException {
+            public void write(char[] cbuf, int off, int len) throws IOException {
                 throw new IOException();
             }
 
