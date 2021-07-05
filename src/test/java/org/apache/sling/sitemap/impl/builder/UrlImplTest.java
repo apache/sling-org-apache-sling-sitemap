@@ -148,7 +148,7 @@ class UrlImplTest extends AbstractBuilderTest {
     }
 
     @Test
-    void testWritingUrlOrExtensionTwiceFails() throws SitemapException, IOException {
+    void testWritingToWrittenUrlThrows() throws SitemapException, IOException {
         // given
         StringWriter writer = new StringWriter();
         SitemapImpl subject = new SitemapImpl(writer, extensionManager);
@@ -164,8 +164,6 @@ class UrlImplTest extends AbstractBuilderTest {
         assertThrows(IllegalStateException.class, () -> url.setChangeFrequency(Url.ChangeFrequency.ALWAYS));
         assertThrows(IllegalStateException.class, () -> url.setLastModified(now));
         assertThrows(IllegalStateException.class, () -> url.addExtension(TestExtension.class));
-        assertThrows(IllegalStateException.class, () -> subject.addUrl("http://foo.bar"));
-        assertThrows(IllegalStateException.class, subject::close);
     }
 
     interface TestExtension2 extends Extension {

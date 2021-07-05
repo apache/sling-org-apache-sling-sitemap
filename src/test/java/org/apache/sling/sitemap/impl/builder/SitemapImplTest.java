@@ -18,21 +18,21 @@
  */
 package org.apache.sling.sitemap.impl.builder;
 
-import org.apache.sling.sitemap.SitemapException;
-import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
-import org.apache.sling.testing.mock.sling.junit5.SlingContext;
-import org.apache.sling.testing.mock.sling.junit5.SlingContextExtension;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import org.apache.sling.sitemap.SitemapException;
+import org.apache.sling.sitemap.impl.builder.extensions.ExtensionProviderManager;
+import org.apache.sling.testing.mock.sling.junit5.SlingContext;
+import org.apache.sling.testing.mock.sling.junit5.SlingContextExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -141,5 +141,20 @@ class SitemapImplTest extends AbstractBuilderTest {
         // then
         SitemapException ex = assertThrows(SitemapException.class, () -> sitemap.addUrl("http://localhost:4503"));
         assertThat(ex.getCause(), instanceOf(IOException.class));
+    }
+
+
+    @Test
+    void testWritingToClosedSitemapThrows() throws IOException {
+        // given
+        StringWriter writer = new StringWriter();
+        SitemapImpl subject = new SitemapImpl(writer, extensionManager);
+
+        // when
+        subject.close();
+
+        assertThrows(IllegalStateException.class, () -> subject.addUrl("http://localhost:4502"));
+        assertThrows(IllegalStateException.class, () -> subject.flush());
+        assertDoesNotThrow(() -> subject.close());
     }
 }

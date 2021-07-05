@@ -75,8 +75,10 @@ public class SitemapImpl implements Sitemap, Closeable {
 
     @Override
     public void close() throws IOException {
+        if (closed) {
+            return;
+        }
         try {
-            ensureNotClosed();
             closed = true;
             writePendingUrl();
             out.write("</urlset>");
