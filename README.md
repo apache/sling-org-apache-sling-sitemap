@@ -51,7 +51,7 @@ considered to top level sitemap root and serves a sitemap-index additionally to 
   + news/
   + products/
    - sitemapRoot = true
- + it-ch/
+ + fr-ch/
   - sitemapRoot = true 
   ...
 ```
