@@ -63,6 +63,7 @@ sitemap root. The sitemaps will be served as following, assuming the appropriate
 https://site.ch/de-ch.sitemap-index.xml
 https://site.ch/de-ch.sitemap.xml
 https://site.ch/de-ch.sitemap.products-sitemap.xml
+https://site.ch/fr-ch.sitemap-index.xml
 https://site.ch/fr-ch.sitemap.xml
 ```
 
