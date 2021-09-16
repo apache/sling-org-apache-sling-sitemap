@@ -196,7 +196,10 @@ public final class SitemapUtil {
     }
 
     /**
-     * Returns all sitemap root {@link Resource}s within the given search path.
+     * Returns all sitemap root {@link Resource}s within the given search path, excluding the search path itself even if it is a sitemap
+     * root.
+     * <p>
+     * The {@link Resource}s returned are normalized using {@link SitemapUtil#normalizeSitemapRoot(Resource)}.
      *
      * @param resolver
      * @param searchPath

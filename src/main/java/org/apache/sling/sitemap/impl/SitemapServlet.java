@@ -24,6 +24,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.servlets.ServletResolverConstants;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.sitemap.SitemapException;
+import org.apache.sling.sitemap.impl.helper.ChainedIterator;
 import org.apache.sling.sitemap.spi.common.SitemapLinkExternalizer;
 import org.apache.sling.sitemap.spi.generator.SitemapGenerator;
 import org.apache.sling.sitemap.SitemapGeneratorManager;
@@ -76,7 +77,7 @@ public class SitemapServlet extends SlingSafeMethodsServlet {
 
         @Override
         public void setProperty(@NotNull String name, @Nullable Object data) {
-            // thei implementation of SitemapGenerator.Context doesn't track any state
+            // the implementation of SitemapGenerator.Context doesn't track any state
         }
     };
 
@@ -184,26 +185,32 @@ public class SitemapServlet extends SlingSafeMethodsServlet {
      * Adds all on-demand sitemaps to the index within the given sitemap root.
      *
      * @param request
-     * @param parentSitemapRoot
+     * @param topLevelSitemapRoot
      * @param index
      * @return
      * @throws SitemapException
      */
-    private Set<String> addOnDemandSitemapsToIndex(SlingHttpServletRequest request, Resource parentSitemapRoot,
+    private Set<String> addOnDemandSitemapsToIndex(SlingHttpServletRequest request, Resource topLevelSitemapRoot,
             SitemapIndexImpl index) throws SitemapException {
         Set<String> addedSitemapSelectors = new HashSet<>();
-        Iterator<Resource> sitemapRoots = findSitemapRoots(request.getResourceResolver(), parentSitemapRoot.getPath());
+        Iterator<Resource> sitemapRoots = findSitemapRoots(request.getResourceResolver(), topLevelSitemapRoot.getPath());
         if (!sitemapRoots.hasNext()) {
             // serve at least the top level sitemap
-            sitemapRoots = Collections.singleton(parentSitemapRoot).iterator();
+            sitemapRoots = Collections.singleton(topLevelSitemapRoot).iterator();
+        } else {
+            // chain with the given sitemap root as it is not part of the result set
+            sitemapRoots = new ChainedIterator<>(
+                sitemapRoots,
+                Collections.singleton(topLevelSitemapRoot).iterator()
+            );
         }
         while (sitemapRoots.hasNext()) {
             Resource sitemapRoot = sitemapRoots.next();
             Set<String> applicableNames = generatorManager.getOnDemandNames(sitemapRoot);
             // applicable names we may serve directly, not applicable names, if any, we have to serve from storage
             for (String applicableName : applicableNames) {
-                String sitemapSelector = getSitemapSelector(sitemapRoot, parentSitemapRoot, applicableName);
-                String location = externalize(request, getSitemapLink(sitemapRoot, sitemapSelector));
+                String sitemapSelector = getSitemapSelector(sitemapRoot, topLevelSitemapRoot, applicableName);
+                String location = externalize(request, getSitemapLink(topLevelSitemapRoot, sitemapSelector));
                 if (location != null) {
                     index.addSitemap(location);
                     addedSitemapSelectors.add(sitemapSelector);

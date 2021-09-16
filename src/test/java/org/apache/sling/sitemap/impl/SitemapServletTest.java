@@ -42,6 +42,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.servlet.ServletException;
 import java.io.ByteArrayInputStream;
@@ -66,16 +67,16 @@ class SitemapServletTest {
     private final SitemapGeneratorManagerImpl generatorManager = new SitemapGeneratorManagerImpl();
     private final ExtensionProviderManager extensionProviderManager = new ExtensionProviderManager();
 
-    private TestResourceTreeSitemapGenerator generator = new TestResourceTreeSitemapGenerator() {
+    private final TestResourceTreeSitemapGenerator generator = new TestResourceTreeSitemapGenerator() {
         @Override
         public @NotNull Set<String> getNames(@NotNull Resource sitemapRoot) {
             return ImmutableSet.of(SitemapService.DEFAULT_SITEMAP_NAME);
         }
     };
-    private TestResourceTreeSitemapGenerator newsGenerator = new TestResourceTreeSitemapGenerator() {
+    private final TestResourceTreeSitemapGenerator newsGenerator = new TestResourceTreeSitemapGenerator() {
         @Override
         public @NotNull Set<String> getNames(@NotNull Resource sitemapRoot) {
-            return ImmutableSet.of("news");
+            return sitemapRoot.getPath().equals(root.getPath()) ? ImmutableSet.of("news") : Collections.emptySet();
         }
     };
 
@@ -96,7 +97,7 @@ class SitemapServletTest {
     @BeforeEach
     void setup() {
         root = context.create().resource("/content/site/de");
-        context.create().resource("/content/site/de/jcr:content", Collections.singletonMap(
+        context.create().resource(root.getPath() + "/jcr:content", Collections.singletonMap(
                 SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
 
         context.registerService(ServiceUserMapped.class, serviceUser, "subServiceName", "sitemap-writer");
@@ -118,11 +119,6 @@ class SitemapServletTest {
                 })
                 .collect(Collectors.toCollection(LinkedHashSet::new))
         ).when(storage).getSitemaps(any());
-
-        MockJcr.setQueryResult(
-                context.resourceResolver().adaptTo(Session.class),
-                Collections.singletonList(root.adaptTo(Node.class))
-        );
     }
 
     @Test
@@ -230,6 +226,44 @@ class SitemapServletTest {
                         + "<sitemap><loc>/site/de.sitemap.xml</loc><lastmod>" + pointInTimeAtUtc + "</lastmod></sitemap>"
                         + "</sitemapindex>",
                 response.getOutputAsString()
+        );
+    }
+
+    @Test
+    void testSitemapIndexContainsNestedOnDemandSitemaps() throws ServletException, IOException, RepositoryException {
+        // given
+        Resource products = context.create().resource("/content/site/de/products");
+        context.create().resource(products.getPath() + "/jcr:content", Collections.singletonMap(
+            SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
+        Resource categories = context.create().resource("/content/site/de/categories");
+        context.create().resource(categories.getPath() + "/jcr:content", Collections.singletonMap(
+            SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
+
+        MockJcr.setQueryResult(
+            context.resourceResolver().adaptTo(Session.class).getWorkspace().getQueryManager(),
+            Arrays.asList(products.adaptTo(Node.class), categories.adaptTo(Node.class))
+        );
+
+        MockSlingHttpServletRequest request = newSitemapIndexReq(root);
+        MockSlingHttpServletResponse response = context.response();
+        generator.setServeOnDemand(true);
+        newsGenerator.setServeOnDemand(true);
+
+        // when
+        subject.doGet(request, response);
+
+        // then
+        assertEquals(200, response.getStatus());
+        assertEquals("application/xml;charset=utf-8", response.getContentType());
+        assertEquals("utf-8", response.getCharacterEncoding());
+        assertEquals(
+            AbstractBuilderTest.XML_HEADER + "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">"
+                + "<sitemap><loc>/site/de.sitemap.products-sitemap.xml</loc></sitemap>"
+                + "<sitemap><loc>/site/de.sitemap.categories-sitemap.xml</loc></sitemap>"
+                + "<sitemap><loc>/site/de.sitemap.news-sitemap.xml</loc></sitemap>"
+                + "<sitemap><loc>/site/de.sitemap.xml</loc></sitemap>"
+                + "</sitemapindex>",
+            response.getOutputAsString()
         );
     }
 
