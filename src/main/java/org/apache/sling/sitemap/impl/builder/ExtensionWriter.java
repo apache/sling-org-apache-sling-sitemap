@@ -57,7 +57,7 @@ class ExtensionWriter implements XMLStreamWriter {
     @Override
     public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         ensureCurrentNamespace(namespaceURI);
-        delegate.writeStartElement(localName, namespaceURI);
+        delegate.writeStartElement(namespaceURI, localName);
     }
 
     @Override
@@ -74,7 +74,7 @@ class ExtensionWriter implements XMLStreamWriter {
     @Override
     public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
         ensureCurrentNamespace(namespaceURI);
-        delegate.writeEmptyElement(localName, namespaceURI);
+        delegate.writeEmptyElement(namespaceURI, localName);
     }
 
     @Override
@@ -104,6 +104,7 @@ class ExtensionWriter implements XMLStreamWriter {
 
     @Override
     public void writeAttribute(String namespaceURI, String localName, String value) throws XMLStreamException {
+        ensureCurrentNamespace(namespaceURI);
         delegate.writeAttribute(namespaceURI, localName, value);
     }
 
