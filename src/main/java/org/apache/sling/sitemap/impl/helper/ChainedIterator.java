@@ -20,6 +20,7 @@ package org.apache.sling.sitemap.impl.helper;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class ChainedIterator<T> implements Iterator<T> {
 
@@ -60,6 +61,9 @@ public class ChainedIterator<T> implements Iterator<T> {
     }
 
     @Override public T next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
         T item = currentItem;
         currentItem = null;
         seek();

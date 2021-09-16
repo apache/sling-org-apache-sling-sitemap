@@ -21,11 +21,13 @@ package org.apache.sling.sitemap.impl.helper;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public class ChainedIteratorTest {
@@ -43,6 +45,11 @@ public class ChainedIteratorTest {
     @Test
     public void testEmptyMutlipleEmptyIterators() {
         assertFalse(new ChainedIterator<>(Collections.emptyIterator(), Collections.emptyIterator(), Collections.emptyIterator()).hasNext());
+    }
+
+    @Test
+    public void testThorwsNoSuchElementException() {
+        assertThrows(NoSuchElementException.class, () -> new ChainedIterator<>().next());
     }
 
     @Test
