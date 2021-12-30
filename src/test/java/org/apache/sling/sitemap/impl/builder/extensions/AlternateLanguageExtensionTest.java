@@ -88,6 +88,7 @@ class AlternateLanguageExtensionTest extends AbstractBuilderTest {
 
         // when
         Url url = sitemap.addUrl("http://example.ch/de.html");
+        url.addExtension(AlternateLanguageExtension.class);
         url.addExtension(AlternateLanguageExtension.class)
             .setLocale(Locale.forLanguageTag("fr-ch"));
         url.addExtension(AlternateLanguageExtension.class)
