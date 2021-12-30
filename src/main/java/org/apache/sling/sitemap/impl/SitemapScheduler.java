@@ -48,7 +48,8 @@ import static org.apache.sling.sitemap.SitemapUtil.findSitemapRoots;
         configurationPolicy = ConfigurationPolicy.REQUIRE,
         property = {
                 Scheduler.PROPERTY_SCHEDULER_CONCURRENT + ":Boolean=false",
-                Scheduler.PROPERTY_SCHEDULER_RUN_ON + "=" + Scheduler.VALUE_RUN_ON_SINGLE
+                Scheduler.PROPERTY_SCHEDULER_RUN_ON + "=" + Scheduler.VALUE_RUN_ON_SINGLE,
+                Scheduler.PROPERTY_SCHEDULER_THREAD_POOL + "=" + SitemapScheduler.THREADPOOL_NAME
         }
 )
 @Designate(ocd = SitemapScheduler.Configuration.class, factory = true)
@@ -82,6 +83,8 @@ public class SitemapScheduler implements Runnable {
                 "searched for")
         String searchPath() default "/content";
     }
+
+    public static final String THREADPOOL_NAME = "org-apache-sling-sitemap";
 
     private static final Logger LOG = LoggerFactory.getLogger(SitemapScheduler.class);
     private static final Map<String, Object> AUTH = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,

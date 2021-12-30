@@ -58,7 +58,8 @@ import static org.apache.sling.sitemap.impl.SitemapEventUtil.newUpdateEvent;
         property = {
                 Scheduler.PROPERTY_SCHEDULER_NAME + "=sitemap-storage-cleanup",
                 Scheduler.PROPERTY_SCHEDULER_CONCURRENT + ":Boolean=false",
-                Scheduler.PROPERTY_SCHEDULER_RUN_ON + "=" + Scheduler.VALUE_RUN_ON_SINGLE
+                Scheduler.PROPERTY_SCHEDULER_RUN_ON + "=" + Scheduler.VALUE_RUN_ON_SINGLE,
+                Scheduler.PROPERTY_SCHEDULER_THREAD_POOL + "=" + SitemapScheduler.THREADPOOL_NAME
         }
 )
 @Designate(ocd = SitemapStorage.Configuration.class)
@@ -146,6 +147,7 @@ public class SitemapStorage implements Runnable {
                 }
             }
             for (Resource resource : toDelete) {
+                LOG.debug("Purging: {}", resource.getPath());
                 resolver.delete(resource);
             }
             resolver.commit();
