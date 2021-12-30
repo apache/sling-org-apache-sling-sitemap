@@ -50,7 +50,7 @@ public class AlternateLanguageExtensionProvider implements SitemapExtensionProvi
         private String hreflang;
         private String href;
 
-        private static <T> T required(T object, String message) throws XMLStreamException {
+        private static String required(String object, String message) throws XMLStreamException {
             if (object == null) {
                 throw new XMLStreamException(message);
             }
