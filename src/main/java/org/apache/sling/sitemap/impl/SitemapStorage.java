@@ -58,7 +58,8 @@ import static org.apache.sling.sitemap.impl.SitemapEventUtil.newUpdateEvent;
         property = {
                 Scheduler.PROPERTY_SCHEDULER_NAME + "=sitemap-storage-cleanup",
                 Scheduler.PROPERTY_SCHEDULER_CONCURRENT + ":Boolean=false",
-                Scheduler.PROPERTY_SCHEDULER_RUN_ON + "=" + Scheduler.VALUE_RUN_ON_SINGLE
+                Scheduler.PROPERTY_SCHEDULER_RUN_ON + "=" + Scheduler.VALUE_RUN_ON_SINGLE,
+                Scheduler.PROPERTY_SCHEDULER_THREAD_POOL + "=" + SitemapScheduler.THREADPOOL_NAME
         }
 )
 @Designate(ocd = SitemapStorage.Configuration.class)
@@ -146,6 +147,7 @@ public class SitemapStorage implements Runnable {
                 }
             }
             for (Resource resource : toDelete) {
+                LOG.debug("Purging: {}", resource.getPath());
                 resolver.delete(resource);
             }
             resolver.commit();
@@ -328,9 +330,9 @@ public class SitemapStorage implements Runnable {
             if (!isTopLevelSitemapRoot(sitemapRoot) || !names.isEmpty()) {
                 // return only those that match at least on of the names requested
                 filter = info -> names.stream()
-                        .map(name -> SitemapUtil.getSitemapSelector(sitemapRoot, topLevelSitemapRoot, name))
-                        .anyMatch(selector -> info.getSitemapSelector().equals(selector)
-                                || info.getSitemapSelector().equals(selector + '-' + info.getFileIndex()));
+                    .map(name -> SitemapUtil.getSitemapSelector(sitemapRoot, topLevelSitemapRoot, name))
+                    .anyMatch(selector -> info.getSitemapSelector().equals(selector)
+                        || info.getSitemapSelector().equals(selector + '-' + info.getFileIndex()));
             } else {
                 filter = any -> true;
             }
@@ -344,10 +346,10 @@ public class SitemapStorage implements Runnable {
             }
 
             return StreamSupport.stream(storageResource.getChildren().spliterator(), false)
-                    .filter(SitemapStorage::isValidSitemapFile)
-                    .map(SitemapStorage::newSitemapStorageInfo)
-                    .filter(filter)
-                    .collect(Collectors.toList());
+                .filter(SitemapStorage::isValidSitemapFile)
+                .map(SitemapStorage::newSitemapStorageInfo)
+                .filter(filter)
+                .collect(Collectors.toList());
         } catch (LoginException ex) {
             LOG.warn("Could not list sitemaps from storage: {}", ex.getMessage());
             return Collections.emptySet();
