@@ -19,7 +19,6 @@
 package org.apache.sling.sitemap.impl;
 
 import com.google.common.collect.ImmutableList;
-
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -45,15 +44,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
-
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -67,10 +63,8 @@ class SitemapSchedulerTest {
     private final SitemapGeneratorManagerImpl generatorManager = new SitemapGeneratorManagerImpl();
     private final SitemapServiceConfiguration sitemapServiceConfiguration = new SitemapServiceConfiguration();
 
-    private final TestGenerator generator1 = new TestGenerator() {
-    };
-    private final TestGenerator generator2 = new TestGenerator() {
-    };
+    private final TestGenerator generator1 = new TestGenerator() {};
+    private final TestGenerator generator2 = new TestGenerator() {};
 
     @Mock
     private ServiceUserMapped serviceUser;
