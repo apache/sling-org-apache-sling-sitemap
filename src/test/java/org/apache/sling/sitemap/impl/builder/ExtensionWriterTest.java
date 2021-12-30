@@ -36,7 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({ MockitoExtension.class })
-public class ExtensionWriterTest {
+class ExtensionWriterTest {
 
     @Mock
     public XMLStreamWriter delegate;
@@ -48,7 +48,7 @@ public class ExtensionWriterTest {
     }
 
     @Test
-    public void testUnsupportedMethods() {
+    void testUnsupportedMethods() {
         assertThrows(UnsupportedOperationException.class, () -> subject.writeEndDocument());
         assertThrows(UnsupportedOperationException.class, () -> subject.close());
         assertThrows(UnsupportedOperationException.class, () -> subject.flush());
@@ -68,7 +68,7 @@ public class ExtensionWriterTest {
     }
 
     @Test
-    public void testDelegatingMethods() throws XMLStreamException {
+    void testDelegatingMethods() throws XMLStreamException {
         subject.writeStartElement("foo");
         verify(delegate).writeStartElement("test", "foo");
         clearInvocations(delegate);
@@ -134,7 +134,7 @@ public class ExtensionWriterTest {
     }
 
     @Test
-    public void testThrowsOnNamespaceMismatch() throws XMLStreamException {
+    void testThrowsOnNamespaceMismatch() throws XMLStreamException {
         assertThrows(IllegalArgumentException.class, () -> subject.writeStartElement("foo", "bar"));
         assertThrows(IllegalArgumentException.class, () -> subject.writeStartElement("t", "foo", "bar"));
         assertThrows(IllegalArgumentException.class, () -> subject.writeEmptyElement("foo", "bar"));
