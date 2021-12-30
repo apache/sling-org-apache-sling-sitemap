@@ -42,9 +42,10 @@ public abstract class AbstractBuilderTest {
     private static final URL XHTML_XSD = AbstractBuilderTest.class.getClassLoader().getResource("xhtml1-strict.xsd");
     private static final URL SITEMAP_XSD = AbstractBuilderTest.class.getClassLoader().getResource("sitemap-0.9.xsd");
     private static final URL SITEMAP_INDEX_XSD = AbstractBuilderTest.class.getClassLoader().getResource("siteindex-0.9.xsd");
+    private static final URL SITEMAP_IMAGE_XSD = AbstractBuilderTest.class.getClassLoader().getResource("sitemap-image-1.1.xsd");
 
     protected void assertSitemap(String expected, String given) {
-        assertEqualsAndValid(expected, given, XML_XSD, XHTML_XSD, SITEMAP_XSD);
+        assertEqualsAndValid(expected, given, XML_XSD, XHTML_XSD, SITEMAP_XSD, SITEMAP_IMAGE_XSD);
     }
 
     protected void assertSitemapIndex(String expected, String given) {

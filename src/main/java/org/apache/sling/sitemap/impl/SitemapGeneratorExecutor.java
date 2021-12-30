@@ -163,7 +163,7 @@ public class SitemapGeneratorExecutor implements JobExecutor {
                 LOG.debug("Generated sitemaps: {}", String.join(", ", sitemap.files));
             }
 
-            // when the max(fileIndex) is smaller then in previous iterations, cleanup old files.
+            // when the max(fileIndex) is smaller than in previous iterations, cleanup old files.
             Collection<String> purgedFiles = storage.deleteSitemaps(res, name, i -> i.getFileIndex() >= sitemap.fileIndex);
 
             if (LOG.isDebugEnabled()) {

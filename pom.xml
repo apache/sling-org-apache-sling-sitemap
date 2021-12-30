@@ -65,6 +65,8 @@
                         <!-- Obtained from http://w3.org/ -->
                         <exclude>src/test/resources/xhtml1-strict.xsd</exclude>
                         <exclude>src/test/resources/xml.xsd</exclude>
+                        <!-- Obtained from https://www.google.com/ -->
+                        <exclude>src/test/resources/sitemap-image-1.1.xsd</exclude>
                     </excludes>
                 </configuration>
             </plugin>
