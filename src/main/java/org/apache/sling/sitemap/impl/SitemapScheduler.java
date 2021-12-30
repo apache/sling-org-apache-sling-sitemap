@@ -22,6 +22,7 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.path.PathSet;
 import org.apache.sling.commons.scheduler.Scheduler;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
@@ -82,11 +83,21 @@ public class SitemapScheduler implements Runnable {
         @AttributeDefinition(name = "Search Path", description = "The path under which sitemap roots should be " +
                 "searched for")
         String searchPath() default "/content";
+
+        @AttributeDefinition(name = "Include Paths", description = "A list of paths that should be included by the scheduler. "
+            + "If left empty, all sitemap roots in the configured search path will be included. Absolute paths and glob patterns "
+            + "are supported.")
+        String[] includePaths() default {};
+
+        @AttributeDefinition(name = "Exclude Paths", description = "A list of paths that should be excluded by the scheduler. "
+            + "If left empty, no sitemap roots in the configured search path will be excluded. Absolute paths and glob patterns "
+            + "are supported.")
+        String[] excludePaths() default {};
     }
 
     public static final String THREADPOOL_NAME = "org-apache-sling-sitemap";
 
-    private static final Logger LOG = LoggerFactory.getLogger(SitemapScheduler.class);
+    private Logger log;
     private static final Map<String, Object> AUTH = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             "sitemap-reader");
 
@@ -103,13 +114,22 @@ public class SitemapScheduler implements Runnable {
     private Set<String> includeGenerators;
     private Set<String> excludeGenerators;
     private String searchPath;
+    private PathSet includePaths;
+    private PathSet excludePaths;
 
     @Activate
     protected void activate(Configuration configuration) {
+        log = LoggerFactory.getLogger(SitemapScheduler.class.getName() + '~' + configuration.scheduler_name());
         includeGenerators = asSet(configuration.includeGenerators());
         excludeGenerators = asSet(configuration.excludeGenerators());
         names = asSet(configuration.names());
         searchPath = configuration.searchPath();
+        if (configuration.includePaths().length > 0) {
+            includePaths = PathSet.fromStringCollection(Arrays.asList(configuration.includePaths()));
+        }
+        if (configuration.excludePaths().length > 0) {
+            excludePaths = PathSet.fromStringCollection(Arrays.asList(configuration.excludePaths()));
+        }
     }
 
     @Override
@@ -124,11 +144,15 @@ public class SitemapScheduler implements Runnable {
                 schedule(sitemapRoots.next(), includeNames);
             }
         } catch (LoginException ex) {
-            LOG.warn("Failed start sitemap jobs: {}", ex.getMessage(), ex);
+            log.warn("Failed start sitemap jobs: {}", ex.getMessage(), ex);
         }
     }
 
     public void schedule(Resource sitemapRoot, @Nullable Collection<String> includeNames) {
+        if (isExcluded(sitemapRoot)) {
+            return;
+        }
+
         Set<String> configuredNames = getApplicableNames(sitemapRoot);
 
         if (includeNames != null) {
@@ -140,16 +164,19 @@ public class SitemapScheduler implements Runnable {
         }
     }
 
-
     /**
      * Returns the names for the given sitemap root this {@link SitemapScheduler} is applicable to. This depends on the
-     * configured generators. If no generators were configured the names of all are returned. If some where configured
+     * configured generators. If no generators were configured the names of all are returned. If some are configured
      * the names provided only by those where the class name matches are returned.
      *
      * @param sitemapRoot
      * @return
      */
     public Set<String> getApplicableNames(Resource sitemapRoot) {
+        if (isExcluded(sitemapRoot)) {
+            return Collections.emptySet();
+        }
+
         Set<String> onDemandNames = generatorManager.getOnDemandNames(sitemapRoot);
         Set<String> toSchedule = generatorManager.getGenerators(sitemapRoot).entrySet().stream()
                 .filter(entry -> includeGenerators == null
@@ -168,12 +195,34 @@ public class SitemapScheduler implements Runnable {
         return toSchedule;
     }
 
+    protected boolean isExcluded(Resource sitemapRoot) {
+        // verify that the sitemapRoot is in the schedulers search path
+        if (!sitemapRoot.getPath().equals(searchPath) && !sitemapRoot.getPath().startsWith(searchPath + "/")) {
+            log.debug("Exclude sitemap root outside of the configured search path '{}': {}", searchPath, sitemapRoot.getPath());
+            return true;
+        }
+
+        // verify if the sitemapRoot is included
+        if (includePaths != null && includePaths.matches(sitemapRoot.getPath()) == null) {
+            log.debug("Sitemap root is not included: {}", sitemapRoot.getPath());
+            return true;
+        }
+
+        // verify if the sitemapRoot is not excluded
+        if (excludePaths != null && excludePaths.matches(sitemapRoot.getPath()) != null) {
+            log.debug("Sitemap root is explicitly excluded: {}", sitemapRoot.getPath());
+            return true;
+        }
+
+        return false;
+    }
+
     protected void addJob(String sitemapRoot, String applicableName) {
         Map<String, Object> jobProperties = new HashMap<>();
         jobProperties.put(SitemapGeneratorExecutor.JOB_PROPERTY_SITEMAP_NAME, applicableName);
         jobProperties.put(SitemapGeneratorExecutor.JOB_PROPERTY_SITEMAP_ROOT, sitemapRoot);
         Job job = jobManager.addJob(SitemapGeneratorExecutor.JOB_TOPIC, jobProperties);
-        LOG.debug("Added job {}", job.getId());
+        log.debug("Added job {}", job.getId());
     }
 
     @Nullable

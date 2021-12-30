@@ -19,6 +19,7 @@
 package org.apache.sling.sitemap.impl;
 
 import com.google.common.collect.ImmutableList;
+
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -44,16 +45,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith({SlingContextExtension.class, MockitoExtension.class})
+@ExtendWith({ SlingContextExtension.class, MockitoExtension.class })
 class SitemapSchedulerTest {
 
     final SlingContext context = new SlingContext(ResourceResolverType.JCR_MOCK);
@@ -62,8 +67,10 @@ class SitemapSchedulerTest {
     private final SitemapGeneratorManagerImpl generatorManager = new SitemapGeneratorManagerImpl();
     private final SitemapServiceConfiguration sitemapServiceConfiguration = new SitemapServiceConfiguration();
 
-    private final TestGenerator generator1 = new TestGenerator() {};
-    private final TestGenerator generator2 = new TestGenerator() {};
+    private final TestGenerator generator1 = new TestGenerator() {
+    };
+    private final TestGenerator generator2 = new TestGenerator() {
+    };
 
     @Mock
     private ServiceUserMapped serviceUser;
@@ -77,10 +84,10 @@ class SitemapSchedulerTest {
     @BeforeEach
     void setup() {
         rootDe = context.create().resource("/content/site/de", Collections.singletonMap(
-                SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
+            SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
         rootEn = context.create().resource("/content/site/en");
         rootEnContent = context.create().resource("/content/site/en/jcr:content", Collections.singletonMap(
-                SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
+            SitemapService.PROPERTY_SITEMAP_ROOT, Boolean.TRUE));
 
         context.registerService(ServiceUserMapped.class, serviceUser, "subServiceName", "sitemap-reader");
         context.registerService(JobManager.class, jobManager);
@@ -91,7 +98,7 @@ class SitemapSchedulerTest {
 
         AtomicInteger jobCount = new AtomicInteger(0);
 
-        when(jobManager.addJob(any(), any())).then(inv -> {
+        lenient().when(jobManager.addJob(any(), any())).then(inv -> {
             Job job = mock(Job.class);
             when(job.getId()).thenReturn(String.valueOf(jobCount.incrementAndGet()));
             return job;
@@ -103,14 +110,14 @@ class SitemapSchedulerTest {
         // given
         context.registerInjectActivateService(subject);
         initResourceResolver(subject, resolver -> MockJcr.setQueryResult(
-                resolver.adaptTo(Session.class),
-                "/jcr:root/content//*[@" + SitemapService.PROPERTY_SITEMAP_ROOT + "=true]" +
-                        " option(index tag slingSitemaps)",
-                Query.XPATH,
-                ImmutableList.of(
-                        rootDe.adaptTo(Node.class),
-                        rootEnContent.adaptTo(Node.class)
-                )
+            resolver.adaptTo(Session.class),
+            "/jcr:root/content//*[@" + SitemapService.PROPERTY_SITEMAP_ROOT + "=true]" +
+                " option(index tag slingSitemaps)",
+            Query.XPATH,
+            ImmutableList.of(
+                rootDe.adaptTo(Node.class),
+                rootEnContent.adaptTo(Node.class)
+            )
         ));
         generator1.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
         generator2.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
@@ -120,12 +127,12 @@ class SitemapSchedulerTest {
 
         // then
         verify(jobManager, times(1)).addJob(
-                eq("org/apache/sling/sitemap/build"),
-                argThat(sitemapJobPropertiesMatch(SitemapService.DEFAULT_SITEMAP_NAME, "/content/site/de"))
+            eq("org/apache/sling/sitemap/build"),
+            argThat(sitemapJobPropertiesMatch(SitemapService.DEFAULT_SITEMAP_NAME, "/content/site/de"))
         );
         verify(jobManager, times(1)).addJob(
-                eq("org/apache/sling/sitemap/build"),
-                argThat(sitemapJobPropertiesMatch(SitemapService.DEFAULT_SITEMAP_NAME, "/content/site/en"))
+            eq("org/apache/sling/sitemap/build"),
+            argThat(sitemapJobPropertiesMatch(SitemapService.DEFAULT_SITEMAP_NAME, "/content/site/en"))
         );
     }
 
@@ -134,11 +141,11 @@ class SitemapSchedulerTest {
         // given
         context.registerInjectActivateService(subject);
         initResourceResolver(subject, resolver -> MockJcr.setQueryResult(
-                resolver.adaptTo(Session.class),
-                "/jcr:root/content//*[@" + SitemapService.PROPERTY_SITEMAP_ROOT + "=true]" +
-                        " option(index tag slingSitemaps)",
-                Query.XPATH,
-                Collections.singletonList(rootDe.adaptTo(Node.class))
+            resolver.adaptTo(Session.class),
+            "/jcr:root/content//*[@" + SitemapService.PROPERTY_SITEMAP_ROOT + "=true]" +
+                " option(index tag slingSitemaps)",
+            Query.XPATH,
+            Collections.singletonList(rootDe.adaptTo(Node.class))
         ));
         generator1.setNames(SitemapService.DEFAULT_SITEMAP_NAME, "sitemap1");
         generator2.setNames(SitemapService.DEFAULT_SITEMAP_NAME, "sitemap2");
@@ -148,31 +155,31 @@ class SitemapSchedulerTest {
 
         // then
         verify(jobManager, times(1)).addJob(
-                eq("org/apache/sling/sitemap/build"),
-                argThat(sitemapJobPropertiesMatch(SitemapService.DEFAULT_SITEMAP_NAME, "/content/site/de"))
+            eq("org/apache/sling/sitemap/build"),
+            argThat(sitemapJobPropertiesMatch(SitemapService.DEFAULT_SITEMAP_NAME, "/content/site/de"))
         );
         verify(jobManager, times(1)).addJob(
-                eq("org/apache/sling/sitemap/build"),
-                argThat(sitemapJobPropertiesMatch("sitemap1", "/content/site/de"))
+            eq("org/apache/sling/sitemap/build"),
+            argThat(sitemapJobPropertiesMatch("sitemap1", "/content/site/de"))
         );
         verify(jobManager, times(1)).addJob(
-                eq("org/apache/sling/sitemap/build"),
-                argThat(sitemapJobPropertiesMatch("sitemap2", "/content/site/de"))
+            eq("org/apache/sling/sitemap/build"),
+            argThat(sitemapJobPropertiesMatch("sitemap2", "/content/site/de"))
         );
     }
 
     @Test
     void testNothingScheduledWhenNameDoesNotMatchGeneratorFromConfiguration() {
         // given
-        context.registerInjectActivateService(subject, "includeGenerators", new String[]{
-                generator1.getClass().getName()
+        context.registerInjectActivateService(subject, "includeGenerators", new String[] {
+            generator1.getClass().getName()
         });
         initResourceResolver(subject, resolver -> MockJcr.setQueryResult(
-                resolver.adaptTo(Session.class),
-                "/jcr:root/content//*[@" + SitemapService.PROPERTY_SITEMAP_ROOT + "=true]" +
-                        " option(index tag slingSitemaps)",
-                Query.XPATH,
-                Collections.singletonList(rootDe.adaptTo(Node.class))
+            resolver.adaptTo(Session.class),
+            "/jcr:root/content//*[@" + SitemapService.PROPERTY_SITEMAP_ROOT + "=true]" +
+                " option(index tag slingSitemaps)",
+            Query.XPATH,
+            Collections.singletonList(rootDe.adaptTo(Node.class))
         ));
         generator1.setNames("sitemap1");
         generator2.setNames(SitemapService.DEFAULT_SITEMAP_NAME, "sitemap2");
@@ -188,23 +195,23 @@ class SitemapSchedulerTest {
 
         // then
         verify(jobManager, times(1)).addJob(
-                eq("org/apache/sling/sitemap/build"),
-                argThat(sitemapJobPropertiesMatch("sitemap1", "/content/site/de"))
+            eq("org/apache/sling/sitemap/build"),
+            argThat(sitemapJobPropertiesMatch("sitemap1", "/content/site/de"))
         );
     }
 
     @Test
-    void testNothingScheduledWhenNameDoesNotNamesFromConfiguration() {
+    void testNothingScheduledWhenNameDoesNotMatchNamesFromConfiguration() {
         // given
-        context.registerInjectActivateService(subject, "names", new String[]{
-                "foobar"
+        context.registerInjectActivateService(subject, "names", new String[] {
+            "foobar"
         });
         initResourceResolver(subject, resolver -> MockJcr.setQueryResult(
-                resolver.adaptTo(Session.class),
-                "/jcr:root/content//*[@" + SitemapService.PROPERTY_SITEMAP_ROOT + "=true]" +
-                        " option(index tag slingSitemaps)",
-                Query.XPATH,
-                Collections.singletonList(rootDe.adaptTo(Node.class))
+            resolver.adaptTo(Session.class),
+            "/jcr:root/content//*[@" + SitemapService.PROPERTY_SITEMAP_ROOT + "=true]" +
+                " option(index tag slingSitemaps)",
+            Query.XPATH,
+            Collections.singletonList(rootDe.adaptTo(Node.class))
         ));
         generator1.setNames("sitemap1");
         generator2.setNames(SitemapService.DEFAULT_SITEMAP_NAME, "sitemap2");
@@ -221,9 +228,68 @@ class SitemapSchedulerTest {
 
         // then
         verify(jobManager, times(1)).addJob(
-                eq("org/apache/sling/sitemap/build"),
-                argThat(sitemapJobPropertiesMatch("foobar", "/content/site/de"))
+            eq("org/apache/sling/sitemap/build"),
+            argThat(sitemapJobPropertiesMatch("foobar", "/content/site/de"))
         );
+    }
+
+    @Test
+    public void testPathsOutsideSearchPathExcluded() {
+        // given
+        context.registerInjectActivateService(subject, "searchPath", "/content/site/en");
+
+        // when, then
+        assertFalse(subject.isExcluded(rootEn));
+        assertFalse(subject.isExcluded(rootEnContent));
+        assertTrue(subject.isExcluded(rootDe));
+    }
+
+    @Test
+    public void testIncludePaths() {
+        // given
+        context.registerInjectActivateService(subject, "includePaths", "glob:/content/site/*/jcr:content");
+
+        // when, then
+        assertTrue(subject.isExcluded(rootEn));
+        assertFalse(subject.isExcluded(rootEnContent));
+        assertTrue(subject.isExcluded(rootDe));
+    }
+
+    @Test
+    public void testExcludePaths() {
+        // given
+        context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
+
+        // when, then
+        assertTrue(subject.isExcluded(rootEn));
+        assertTrue(subject.isExcluded(rootEnContent));
+        assertFalse(subject.isExcluded(rootDe));
+    }
+
+    @Test
+    public void testNothingScheduledForExcludedSitemapRoot() {
+        // given
+        context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
+        generator1.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
+        generator2.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
+
+        // when
+        subject.schedule(rootEn, Collections.singleton(SitemapService.DEFAULT_SITEMAP_NAME));
+
+        // then
+        verify(jobManager, never()).addJob(any(), any());
+    }
+
+    @Test
+    public void testNoApplicableNamesReturnedForExcludedSitemapRoot() {
+        // given
+        context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
+        generator1.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
+        generator2.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
+
+        // when, then
+        assertEquals(0, subject.getApplicableNames(rootEn).size());
+        assertEquals(1, subject.getApplicableNames(rootDe).size());
     }
 
     private void initResourceResolver(SitemapScheduler scheduler, Consumer<ResourceResolver> resolverConsumer) {
@@ -231,13 +297,13 @@ class SitemapSchedulerTest {
     }
 
     static void initResourceResolver(SlingContext context, SitemapScheduler scheduler,
-                                     Consumer<ResourceResolver> resolverConsumer) {
+        Consumer<ResourceResolver> resolverConsumer) {
         try {
             ResourceResolverFactory original = context.getService(ResourceResolverFactory.class);
             ResourceResolverFactory mock = mock(ResourceResolverFactory.class);
             Fields.allDeclaredFieldsOf(scheduler).instanceFields().stream()
-                    .filter(instanceField -> "resourceResolverFactory".equals(instanceField.name()))
-                    .forEach(instanceField -> instanceField.set(mock));
+                .filter(instanceField -> "resourceResolverFactory".equals(instanceField.name()))
+                .forEach(instanceField -> instanceField.set(mock));
 
             lenient().when(mock.getServiceResourceResolver(any())).then(inv -> {
                 ResourceResolver resolver = original.getServiceResourceResolver(inv.getArgument(0));
