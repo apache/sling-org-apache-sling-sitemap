@@ -74,15 +74,16 @@ module must implement an appropriate `SitemapGenerator` that fits their content 
 `ResourcceTreeSitemapGenator` implementation is available to cover the most common use cases.
 
 Each `SitemapGenerator` may produce multiple sitemaps for a given sitemap root. For example a default sitemap and a news
-specific sitemap, that contains only 1000 urls that were changed in the past 2 days. Or as another example would a
-product sitemap for each of a catalogues top level categories. To enable that, a `SitemapGenerator` can return _0..n_
-names for a given resource, each name representing a single sitemap at the given resource.
+specific sitemap, that contains only up to 1000 urls that were changed in the past 2 days. Or as another example, 
+consider an eCommerce site, that generates a product sitemap for each top level category of a catalog. To enable that, 
+a `SitemapGenerator` can return _0..n_ names for a given resource, each name representing a single sitemap at the given 
+resource.
 
 `SitemapGenerator` implementations need to be registered as OSGI services. In case of an overlap, it depends on
 the `service.ranking` which `SitemapGenerators` are used for a particular sitemap root. For example, it may be that two
-`SitemapGenerators` can generator a default sitemap for a sitemap root, but the second one can also generate a news
-sitemap. The first, higher-ranked `SitemapGenerator` will be used for the default sitemap, but the second will still be
-taken into account for the news sitemap.
+`SitemapGenerators` can generate a default sitemap for a sitemap root, but the second one can also generate a news
+sitemap. The first, higher-ranked `SitemapGenerator` will be used for the default sitemap, but the second one will still
+be taken into account for the news sitemap.
 
 #### Background Generation
 
