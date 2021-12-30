@@ -22,7 +22,6 @@ import org.apache.sling.sitemap.builder.Extension;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.annotation.versioning.ProviderType;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Locale;

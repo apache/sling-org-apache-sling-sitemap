@@ -20,24 +20,19 @@ package org.apache.sling.sitemap.impl.builder.extensions;
 
 import org.apache.sling.sitemap.SitemapException;
 import org.apache.sling.sitemap.builder.Url;
-import org.apache.sling.sitemap.builder.extensions.GoogleImageExtension;
 import org.apache.sling.sitemap.builder.extensions.GoogleNewsExtension;
 import org.apache.sling.sitemap.impl.builder.AbstractBuilderTest;
 import org.apache.sling.sitemap.impl.builder.SitemapImpl;
 import org.apache.sling.testing.mock.sling.junit5.SlingContext;
 import org.apache.sling.testing.mock.sling.junit5.SlingContextExtension;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Locale;
 
 @ExtendWith({SlingContextExtension.class})
@@ -70,7 +65,11 @@ class GoogleNewsExtensionTest extends AbstractBuilderTest {
                 .setPublicationName("News 2")
                 .setPublicationLanguage(Locale.GERMAN)
                 .setPublicationDate(OffsetDateTime.parse("2021-12-30T12:34:56.000+01:00"))
-                .setTitle("News Title 2");
+                .setTitle("News Title 2")
+                .setAccessRestriction(null)
+                .setGenres()
+                .setKeywords()
+                .setStockTickers();
         url.addExtension(GoogleNewsExtension.class)
                 .setPublicationName("News 3")
                 .setPublicationLanguage(new Locale("zh", "tw"))
