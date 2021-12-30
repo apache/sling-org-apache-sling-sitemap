@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 @ExtendWith({SlingContextExtension.class})
-public class GoogleImageExtensionTest extends AbstractBuilderTest {
+class GoogleImageExtensionTest extends AbstractBuilderTest {
 
     final SlingContext context = new SlingContext();
 
