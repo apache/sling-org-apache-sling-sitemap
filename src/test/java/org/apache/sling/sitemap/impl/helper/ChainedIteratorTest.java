@@ -30,30 +30,30 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ChainedIteratorTest {
+class ChainedIteratorTest {
 
     @Test
-    public void testEmptyNoIterator() {
+    void testEmptyNoIterator() {
         assertFalse(new ChainedIterator<>().hasNext());
     }
 
     @Test
-    public void testEmptyOneEmptyIterator() {
+    void testEmptyOneEmptyIterator() {
         assertFalse(new ChainedIterator<>(Collections.emptyIterator()).hasNext());
     }
 
     @Test
-    public void testEmptyMutlipleEmptyIterators() {
+    void testEmptyMutlipleEmptyIterators() {
         assertFalse(new ChainedIterator<>(Collections.emptyIterator(), Collections.emptyIterator(), Collections.emptyIterator()).hasNext());
     }
 
     @Test
-    public void testThorwsNoSuchElementException() {
+    void testThorwsNoSuchElementException() {
         assertThrows(NoSuchElementException.class, () -> new ChainedIterator<>().next());
     }
 
     @Test
-    public void testContainsAll() {
+    void testContainsAll() {
         Iterator<String> it = new ChainedIterator<>(
             Arrays.asList("a", "b").iterator(),
             Arrays.asList("c", "d").iterator()
