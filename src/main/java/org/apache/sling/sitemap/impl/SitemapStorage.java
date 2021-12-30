@@ -330,9 +330,9 @@ public class SitemapStorage implements Runnable {
             if (!isTopLevelSitemapRoot(sitemapRoot) || !names.isEmpty()) {
                 // return only those that match at least on of the names requested
                 filter = info -> names.stream()
-                    .map(name -> SitemapUtil.getSitemapSelector(sitemapRoot, topLevelSitemapRoot, name))
-                    .anyMatch(selector -> info.getSitemapSelector().equals(selector)
-                        || info.getSitemapSelector().equals(selector + '-' + info.getFileIndex()));
+                        .map(name -> SitemapUtil.getSitemapSelector(sitemapRoot, topLevelSitemapRoot, name))
+                        .anyMatch(selector -> info.getSitemapSelector().equals(selector)
+                                || info.getSitemapSelector().equals(selector + '-' + info.getFileIndex()));
             } else {
                 filter = any -> true;
             }
@@ -346,10 +346,10 @@ public class SitemapStorage implements Runnable {
             }
 
             return StreamSupport.stream(storageResource.getChildren().spliterator(), false)
-                .filter(SitemapStorage::isValidSitemapFile)
-                .map(SitemapStorage::newSitemapStorageInfo)
-                .filter(filter)
-                .collect(Collectors.toList());
+                    .filter(SitemapStorage::isValidSitemapFile)
+                    .map(SitemapStorage::newSitemapStorageInfo)
+                    .filter(filter)
+                    .collect(Collectors.toList());
         } catch (LoginException ex) {
             LOG.warn("Could not list sitemaps from storage: {}", ex.getMessage());
             return Collections.emptySet();
