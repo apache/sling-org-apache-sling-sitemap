@@ -228,7 +228,7 @@ class SitemapSchedulerTest {
     }
 
     @Test
-    public void testPathsOutsideSearchPathExcluded() {
+    void testPathsOutsideSearchPathExcluded() {
         // given
         context.registerInjectActivateService(subject, "searchPath", "/content/site/en");
 
@@ -239,7 +239,7 @@ class SitemapSchedulerTest {
     }
 
     @Test
-    public void testIncludePaths() {
+    void testIncludePaths() {
         // given
         context.registerInjectActivateService(subject, "includePaths", "glob:/content/site/*/jcr:content");
 
@@ -250,7 +250,7 @@ class SitemapSchedulerTest {
     }
 
     @Test
-    public void testExcludePaths() {
+    void testExcludePaths() {
         // given
         context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
 
@@ -261,7 +261,7 @@ class SitemapSchedulerTest {
     }
 
     @Test
-    public void testNothingScheduledForExcludedSitemapRoot() {
+    void testNothingScheduledForExcludedSitemapRoot() {
         // given
         context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
         generator1.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
@@ -275,7 +275,7 @@ class SitemapSchedulerTest {
     }
 
     @Test
-    public void testNoApplicableNamesReturnedForExcludedSitemapRoot() {
+    void testNoApplicableNamesReturnedForExcludedSitemapRoot() {
         // given
         context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
         generator1.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
