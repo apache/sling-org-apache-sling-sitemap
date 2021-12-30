@@ -26,11 +26,9 @@ import org.osgi.service.component.annotations.Component;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
