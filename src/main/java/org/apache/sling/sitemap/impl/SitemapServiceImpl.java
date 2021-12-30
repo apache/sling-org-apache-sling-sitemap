@@ -98,10 +98,7 @@ public class SitemapServiceImpl implements SitemapService {
             return;
         }
         for (ServiceReference<SitemapScheduler> scheduler : schedulers.getServiceReferences()) {
-            Object searchPath = scheduler.getProperty("searchPath");
-            if (searchPath instanceof String && sitemapRoot.getPath().startsWith(searchPath + "/")) {
-                schedulers.getService(scheduler).schedule(sitemapRoot, null);
-            }
+            schedulers.getService(scheduler).schedule(sitemapRoot, null);
         }
     }
 
@@ -112,10 +109,7 @@ public class SitemapServiceImpl implements SitemapService {
         }
 
         for (ServiceReference<SitemapScheduler> scheduler : schedulers.getServiceReferences()) {
-            Object searchPath = scheduler.getProperty("searchPath");
-            if (searchPath instanceof String && sitemapRoot.getPath().startsWith(searchPath + "/")) {
-                schedulers.getService(scheduler).schedule(sitemapRoot, Collections.singleton(name));
-            }
+            schedulers.getService(scheduler).schedule(sitemapRoot, Collections.singleton(name));
         }
     }
 

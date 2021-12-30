@@ -44,11 +44,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.jcr.Node;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -91,7 +92,7 @@ class SitemapSchedulerTest {
 
         AtomicInteger jobCount = new AtomicInteger(0);
 
-        when(jobManager.addJob(any(), any())).then(inv -> {
+        lenient().when(jobManager.addJob(any(), any())).then(inv -> {
             Job job = mock(Job.class);
             when(job.getId()).thenReturn(String.valueOf(jobCount.incrementAndGet()));
             return job;
@@ -194,7 +195,7 @@ class SitemapSchedulerTest {
     }
 
     @Test
-    void testNothingScheduledWhenNameDoesNotNamesFromConfiguration() {
+    void testNothingScheduledWhenNameDoesNotMatchNamesFromConfiguration() {
         // given
         context.registerInjectActivateService(subject, "names", new String[]{
                 "foobar"
@@ -224,6 +225,65 @@ class SitemapSchedulerTest {
                 eq("org/apache/sling/sitemap/build"),
                 argThat(sitemapJobPropertiesMatch("foobar", "/content/site/de"))
         );
+    }
+
+    @Test
+    void testPathsOutsideSearchPathExcluded() {
+        // given
+        context.registerInjectActivateService(subject, "searchPath", "/content/site/en");
+
+        // when, then
+        assertFalse(subject.isExcluded(rootEn));
+        assertFalse(subject.isExcluded(rootEnContent));
+        assertTrue(subject.isExcluded(rootDe));
+    }
+
+    @Test
+    void testIncludePaths() {
+        // given
+        context.registerInjectActivateService(subject, "includePaths", "glob:/content/site/*/jcr:content");
+
+        // when, then
+        assertTrue(subject.isExcluded(rootEn));
+        assertFalse(subject.isExcluded(rootEnContent));
+        assertTrue(subject.isExcluded(rootDe));
+    }
+
+    @Test
+    void testExcludePaths() {
+        // given
+        context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
+
+        // when, then
+        assertTrue(subject.isExcluded(rootEn));
+        assertTrue(subject.isExcluded(rootEnContent));
+        assertFalse(subject.isExcluded(rootDe));
+    }
+
+    @Test
+    void testNothingScheduledForExcludedSitemapRoot() {
+        // given
+        context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
+        generator1.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
+        generator2.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
+
+        // when
+        subject.schedule(rootEn, Collections.singleton(SitemapService.DEFAULT_SITEMAP_NAME));
+
+        // then
+        verify(jobManager, never()).addJob(any(), any());
+    }
+
+    @Test
+    void testNoApplicableNamesReturnedForExcludedSitemapRoot() {
+        // given
+        context.registerInjectActivateService(subject, "excludePaths", "glob:/content/site/en**");
+        generator1.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
+        generator2.setNames(SitemapService.DEFAULT_SITEMAP_NAME);
+
+        // when, then
+        assertEquals(0, subject.getApplicableNames(rootEn).size());
+        assertEquals(1, subject.getApplicableNames(rootDe).size());
     }
 
     private void initResourceResolver(SitemapScheduler scheduler, Consumer<ResourceResolver> resolverConsumer) {
