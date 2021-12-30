@@ -48,8 +48,9 @@ class ChainedIteratorTest {
     }
 
     @Test
-    void testThorwsNoSuchElementException() {
-        assertThrows(NoSuchElementException.class, () -> new ChainedIterator<>().next());
+    void testThrowsNoSuchElementException() {
+        Iterator<?> subject = new ChainedIterator<>();
+        assertThrows(NoSuchElementException.class, () -> subject.next());
     }
 
     @Test
