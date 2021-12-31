@@ -144,3 +144,9 @@ In order to hide the implementation detail from the consumer API, the `Extension
 An example extension implementation can be found with
 the [AlternateLanguageExtension](src/main/java/org/apache/sling/sitemap/builder/extensions/AlternateLanguageExtension.java)
 .
+
+For the following implemented extensions, refer to the respective interfaces in [o.a.s.sitemap.builder.extensions](src/main/java/org/apache/sling/sitemap/builder/extensions):
+* [Alternate Language Links](https://developers.google.com/search/docs/advanced/crawling/localized-versions#sitemap)
+* [Google Image Sitemap](https://developers.google.com/search/docs/advanced/sitemaps/image-sitemaps)
+* [Google Video Sitemap](https://developers.google.com/search/docs/advanced/sitemaps/video-sitemaps)
+* [Google News Sitemap](https://developers.google.com/search/docs/advanced/sitemaps/news-sitemap)
