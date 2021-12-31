@@ -22,6 +22,7 @@ import org.apache.sling.sitemap.builder.extensions.GoogleNewsExtension;
 import org.apache.sling.sitemap.spi.builder.AbstractExtension;
 import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +109,7 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleNewsExtension setGenres(Collection<Genre> genres) {
+        public GoogleNewsExtension setGenres(@Nullable Collection<Genre> genres) {
             this.genres = genres != null && !genres.isEmpty()
                     ? genres.stream().map(Genre::getValue).collect(Collectors.joining(","))
                     : null;
@@ -117,7 +118,7 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleNewsExtension setKeywords(Collection<String> keywords) {
+        public GoogleNewsExtension setKeywords(@Nullable Collection<String> keywords) {
             this.keywords = keywords != null && !keywords.isEmpty()
                     ? String.join(",", keywords)
                     : null;
@@ -126,7 +127,7 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleNewsExtension setStockTickers(Collection<String> stockTickers) {
+        public GoogleNewsExtension setStockTickers(@Nullable Collection<String> stockTickers) {
             if (stockTickers != null) {
                 if (stockTickers.size() > 5) {
                     LOG.warn("Adjusting stock tickers as they are out of bounds (0,5): {}", stockTickers.size());

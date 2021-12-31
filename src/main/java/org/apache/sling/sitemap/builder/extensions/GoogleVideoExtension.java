@@ -118,7 +118,7 @@ public interface GoogleVideoExtension extends Extension {
      * @return
      */
     @NotNull
-    GoogleVideoExtension setUrl(String contentLocation);
+    GoogleVideoExtension setUrl(@Nullable String contentLocation);
 
     /**
      * {@code player_loc}
@@ -127,37 +127,37 @@ public interface GoogleVideoExtension extends Extension {
      * @return
      */
     @NotNull
-    GoogleVideoExtension setPlayerUrl(String playerLocation);
+    GoogleVideoExtension setPlayerUrl(@Nullable String playerLocation);
 
     @NotNull
-    GoogleVideoExtension setDuration(Integer duration);
+    GoogleVideoExtension setDuration(@Nullable Integer duration);
 
     @NotNull
-    GoogleVideoExtension setExpirationDate(LocalDate date);
+    GoogleVideoExtension setExpirationDate(@Nullable LocalDate date);
 
     @NotNull
-    GoogleVideoExtension setExpirationDate(OffsetDateTime date);
+    GoogleVideoExtension setExpirationDate(@Nullable OffsetDateTime date);
 
     @NotNull
-    GoogleVideoExtension setRating(Float rating);
+    GoogleVideoExtension setRating(@Nullable Float rating);
 
     @NotNull
-    GoogleVideoExtension setViewCount(Integer viewCount);
+    GoogleVideoExtension setViewCount(@Nullable Integer viewCount);
 
     @NotNull
-    GoogleVideoExtension setPublicationDate(LocalDate date);
+    GoogleVideoExtension setPublicationDate(@Nullable LocalDate date);
 
     @NotNull
-    GoogleVideoExtension setPublicationDate(OffsetDateTime date);
+    GoogleVideoExtension setPublicationDate(@Nullable OffsetDateTime date);
 
     @NotNull
-    GoogleVideoExtension setTags(Collection<String> tags);
+    GoogleVideoExtension setTags(@Nullable Collection<String> tags);
 
     @NotNull
-    GoogleVideoExtension setCategory(String category);
+    GoogleVideoExtension setCategory(@Nullable String category);
 
     @NotNull
-    GoogleVideoExtension setFamilyFriendly(Boolean familyFriendly);
+    GoogleVideoExtension setFamilyFriendly(@Nullable Boolean familyFriendly);
 
     /**
      * {@code restriction}
@@ -183,16 +183,16 @@ public interface GoogleVideoExtension extends Extension {
     GoogleVideoExtension addPrice(float price, @NotNull String currency, @Nullable PriceType type, @Nullable Resolution resolution);
 
     @NotNull
-    GoogleVideoExtension setRequiresSubscription(Boolean requiresSubscription);
+    GoogleVideoExtension setRequiresSubscription(@Nullable Boolean requiresSubscription);
 
     @NotNull
-    GoogleVideoExtension setUploader(String uploader);
+    GoogleVideoExtension setUploader(@Nullable String uploader);
 
     @NotNull
-    GoogleVideoExtension setUploaderUrl(String uploaderInfo);
+    GoogleVideoExtension setUploaderUrl(@Nullable String uploaderInfo);
 
     @NotNull
-    GoogleVideoExtension setLive(Boolean live);
+    GoogleVideoExtension setLive(@Nullable Boolean live);
 
 
 }

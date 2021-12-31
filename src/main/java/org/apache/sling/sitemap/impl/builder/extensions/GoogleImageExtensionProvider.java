@@ -22,6 +22,7 @@ import org.apache.sling.sitemap.builder.extensions.GoogleImageExtension;
 import org.apache.sling.sitemap.spi.builder.AbstractExtension;
 import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Component;
 
 import javax.xml.stream.XMLStreamException;
@@ -67,28 +68,28 @@ public class GoogleImageExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleImageExtension setCaption(String caption) {
+        public GoogleImageExtension setCaption(@Nullable String caption) {
             this.caption = caption;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleImageExtension setGeoLocation(String geoLocation) {
+        public GoogleImageExtension setGeoLocation(@Nullable String geoLocation) {
             this.geoLocation = geoLocation;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleImageExtension setTitle(String title) {
+        public GoogleImageExtension setTitle(@Nullable String title) {
             this.title = title;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleImageExtension setLicense(String licenseLocation) {
+        public GoogleImageExtension setLicense(@Nullable String licenseLocation) {
             this.license = licenseLocation;
             return this;
         }

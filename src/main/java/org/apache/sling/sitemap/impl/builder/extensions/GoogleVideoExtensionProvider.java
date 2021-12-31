@@ -158,21 +158,21 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleVideoExtension setUrl(String contentLocation) {
+        public GoogleVideoExtension setUrl(@Nullable String contentLocation) {
             this.contentLocation = contentLocation;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setPlayerUrl(String playerLocation) {
+        public GoogleVideoExtension setPlayerUrl(@Nullable String playerLocation) {
             this.playerLocation = playerLocation;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setDuration(Integer duration) {
+        public GoogleVideoExtension setDuration(@Nullable Integer duration) {
             if (duration != null) {
                 if (duration < 0 || duration > 28800) {
                     LOG.warn("Adjusting duration as it is out of bounds (0, 28800): {}", duration);
@@ -187,21 +187,21 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleVideoExtension setExpirationDate(LocalDate date) {
+        public GoogleVideoExtension setExpirationDate(@Nullable LocalDate date) {
             this.expirationDate = date;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setExpirationDate(OffsetDateTime date) {
+        public GoogleVideoExtension setExpirationDate(@Nullable OffsetDateTime date) {
             this.expirationDate = date;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setRating(Float rating) {
+        public GoogleVideoExtension setRating(@Nullable Float rating) {
             if (rating != null) {
                 if (rating < 0 || rating > 5) {
                     LOG.warn("Adjusting rating as it is out of bounds (0,5): {}", rating);
@@ -216,7 +216,7 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleVideoExtension setViewCount(Integer viewCount) {
+        public GoogleVideoExtension setViewCount(@Nullable Integer viewCount) {
             if (viewCount != null) {
                 if (viewCount < 0) {
                     LOG.warn("Adjusting negative view count: {}", viewCount);
@@ -231,35 +231,35 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleVideoExtension setPublicationDate(LocalDate date) {
+        public GoogleVideoExtension setPublicationDate(@Nullable LocalDate date) {
             this.publicationDate = date;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setPublicationDate(OffsetDateTime date) {
+        public GoogleVideoExtension setPublicationDate(@Nullable OffsetDateTime date) {
             this.publicationDate = date;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setTags(Collection<String> tags) {
-            this.tags = new ArrayList<>(tags);
+        public GoogleVideoExtension setTags(@Nullable Collection<String> tags) {
+            this.tags = tags != null ? new ArrayList<>(tags) : null;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setCategory(String category) {
+        public GoogleVideoExtension setCategory(@Nullable String category) {
             this.category = category;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setFamilyFriendly(Boolean familyFriendly) {
+        public GoogleVideoExtension setFamilyFriendly(@Nullable Boolean familyFriendly) {
             this.familyFriendly = booleanToString(familyFriendly);
             return this;
         }
@@ -313,28 +313,28 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleVideoExtension setRequiresSubscription(Boolean requiresSubscription) {
+        public GoogleVideoExtension setRequiresSubscription(@Nullable Boolean requiresSubscription) {
             this.requiresSubscription = booleanToString(requiresSubscription);
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setUploader(String uploader) {
+        public GoogleVideoExtension setUploader(@Nullable String uploader) {
             this.uploader = uploader;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setUploaderUrl(String uploaderInfo) {
+        public GoogleVideoExtension setUploaderUrl(@Nullable String uploaderInfo) {
             this.uploaderInfo = uploaderInfo;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension setLive(Boolean live) {
+        public GoogleVideoExtension setLive(@Nullable Boolean live) {
             this.live = booleanToString(live);
             return this;
         }

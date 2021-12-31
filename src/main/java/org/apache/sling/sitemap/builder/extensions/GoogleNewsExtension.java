@@ -20,6 +20,7 @@ package org.apache.sling.sitemap.builder.extensions;
 
 import org.apache.sling.sitemap.builder.Extension;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.time.LocalDate;
@@ -82,14 +83,14 @@ public interface GoogleNewsExtension extends Extension {
     GoogleNewsExtension setTitle(@NotNull String title);
 
     @NotNull
-    GoogleNewsExtension setAccessRestriction(AccessRestriction accessRestriction);
+    GoogleNewsExtension setAccessRestriction(@Nullable AccessRestriction accessRestriction);
 
     @NotNull
-    GoogleNewsExtension setGenres(Collection<Genre> genres);
+    GoogleNewsExtension setGenres(@Nullable Collection<Genre> genres);
 
     @NotNull
-    GoogleNewsExtension setKeywords(Collection<String> keywords);
+    GoogleNewsExtension setKeywords(@Nullable Collection<String> keywords);
 
     @NotNull
-    GoogleNewsExtension setStockTickers(Collection<String> stockTickers);
+    GoogleNewsExtension setStockTickers(@Nullable Collection<String> stockTickers);
 }

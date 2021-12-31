@@ -20,6 +20,7 @@ package org.apache.sling.sitemap.builder.extensions;
 
 import org.apache.sling.sitemap.builder.Extension;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -34,15 +35,15 @@ public interface GoogleImageExtension extends Extension {
     GoogleImageExtension setUrl(@NotNull String location);
 
     @NotNull
-    GoogleImageExtension setCaption(String caption);
+    GoogleImageExtension setCaption(@Nullable String caption);
 
     @NotNull
-    GoogleImageExtension setGeoLocation(String geoLocation);
+    GoogleImageExtension setGeoLocation(@Nullable String geoLocation);
 
     @NotNull
-    GoogleImageExtension setTitle(String title);
+    GoogleImageExtension setTitle(@Nullable String title);
 
     @NotNull
-    GoogleImageExtension setLicense(String licenseLocation);
+    GoogleImageExtension setLicense(@Nullable String licenseLocation);
 
 }
