@@ -109,7 +109,7 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
         @Override
         @NotNull
         public GoogleNewsExtension setGenres(Collection<Genre> genres) {
-            this.genres = genres != null && genres.size() > 0
+            this.genres = genres != null && !genres.isEmpty()
                     ? genres.stream().map(Genre::getValue).collect(Collectors.joining(","))
                     : null;
             return this;
@@ -118,7 +118,7 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
         @Override
         @NotNull
         public GoogleNewsExtension setKeywords(Collection<String> keywords) {
-            this.keywords = keywords != null && keywords.size() > 0
+            this.keywords = keywords != null && !keywords.isEmpty()
                     ? String.join(",", keywords)
                     : null;
             return this;
