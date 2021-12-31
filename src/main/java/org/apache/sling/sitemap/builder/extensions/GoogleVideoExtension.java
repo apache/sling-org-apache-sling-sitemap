@@ -167,7 +167,7 @@ public interface GoogleVideoExtension extends Extension {
      * @return
      */
     @NotNull
-    GoogleVideoExtension setAccessRestriction(Access restriction, Collection<String> countryCodes);
+    GoogleVideoExtension setAccessRestriction(@Nullable Access restriction, @Nullable Collection<String> countryCodes);
 
     /**
      * {@code platform}
@@ -177,10 +177,10 @@ public interface GoogleVideoExtension extends Extension {
      * @return
      */
     @NotNull
-    GoogleVideoExtension setPlatformRestriction(Access restriction, Collection<Platform> platforms);
+    GoogleVideoExtension setPlatformRestriction(@Nullable Access restriction, @Nullable Collection<Platform> platforms);
 
     @NotNull
-    GoogleVideoExtension addPrice(float price, String currency, @Nullable PriceType type, @Nullable Resolution resolution);
+    GoogleVideoExtension addPrice(float price, @NotNull String currency, @Nullable PriceType type, @Nullable Resolution resolution);
 
     @NotNull
     GoogleVideoExtension setRequiresSubscription(Boolean requiresSubscription);

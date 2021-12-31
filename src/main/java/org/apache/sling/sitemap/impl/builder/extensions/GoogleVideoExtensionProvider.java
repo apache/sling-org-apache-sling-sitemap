@@ -22,6 +22,7 @@ import org.apache.sling.sitemap.builder.extensions.GoogleVideoExtension;
 import org.apache.sling.sitemap.spi.builder.AbstractExtension;
 import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +33,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component(
@@ -89,7 +87,11 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
         private String live;
 
         private static String booleanToString(Boolean bool) {
-            return bool != null ? (bool ? "yes" : "no") : null;
+            if (bool != null) {
+                return bool ? "yes" : "no";
+            } else {
+                return null;
+            }
         }
 
         private static String required(String object, String message) throws XMLStreamException {
@@ -264,13 +266,15 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleVideoExtension setAccessRestriction(Access restriction, Collection<String> countryCodes) {
-            String accessRestrictions = countryCodes.stream()
+        public GoogleVideoExtension setAccessRestriction(@Nullable Access restriction, @Nullable Collection<String> countryCodes) {
+            String accessRestrictionsCorrected = countryCodes != null
+                    ? countryCodes.stream()
                     .map(countryCode -> countryCode.toUpperCase(Locale.ROOT))
                     .filter(countryCode -> countryCode.length() == 2)
-                    .collect(Collectors.joining(" "));
-            if (accessRestrictions.length() > 0) {
-                this.accessRestrictions = accessRestrictions;
+                    .collect(Collectors.joining(" "))
+                    : null;
+            if (restriction != null && accessRestrictionsCorrected != null && accessRestrictionsCorrected.length() > 0) {
+                this.accessRestrictions = accessRestrictionsCorrected;
                 this.accessRestrictionsRel = restriction.getValue();
             } else {
                 this.accessRestrictions = null;
@@ -281,15 +285,20 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleVideoExtension setPlatformRestriction(Access restriction, Collection<Platform> platforms) {
-            this.platformRestrictions = platforms.stream().map(Platform::getValue).collect(Collectors.joining(" "));
-            this.platformRestrictionsRel = restriction.getValue();
+        public GoogleVideoExtension setPlatformRestriction(@Nullable Access restriction, @Nullable Collection<Platform> platforms) {
+            if (restriction != null && platforms != null) {
+                this.platformRestrictions = platforms.stream().map(Platform::getValue).collect(Collectors.joining(" "));
+                this.platformRestrictionsRel = restriction.getValue();
+            } else {
+                this.platformRestrictions = null;
+                this.platformRestrictionsRel = null;
+            }
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleVideoExtension addPrice(float price, String currency, PriceType type, Resolution resolution) {
+        public GoogleVideoExtension addPrice(float price, @NotNull String currency, @Nullable PriceType type, @Nullable Resolution resolution) {
             if (prices == null) {
                 this.prices = new ArrayList<>();
             }
@@ -349,7 +358,18 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
             writeCond(writer, rating, "rating");
             writeCond(writer, viewCount, "view_count");
             writeCond(writer, publicationDate, "publication_date");
+            writeTags(writer);
+            writeCond(writer, category, "category");
+            writeCond(writer, familyFriendly, "family_friendly");
+            writeRestriction(writer, accessRestrictions, accessRestrictionsRel, "restriction");
+            writePrices(writer);
+            writeCond(writer, requiresSubscription, "requires_subscription");
+            writeUploader(writer);
+            writeRestriction(writer, platformRestrictions, platformRestrictionsRel, "platform");
+            writeCond(writer, live, "live");
+        }
 
+        private void writeTags(XMLStreamWriter writer) throws XMLStreamException {
             if (tags != null) {
                 if (tags.size() > 32) {
                     LOG.warn("Truncating tags as more then 32 were given: {}", tags.size());
@@ -360,17 +380,9 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
                     writer.writeEndElement();
                 }
             }
+        }
 
-            writeCond(writer, category, "category");
-            writeCond(writer, familyFriendly, "family_friendly");
-
-            if (accessRestrictions != null) {
-                writer.writeStartElement("restriction");
-                writer.writeAttribute("relationship", accessRestrictionsRel);
-                writer.writeCharacters(accessRestrictions);
-                writer.writeEndElement();
-            }
-
+        private void writePrices(XMLStreamWriter writer) throws XMLStreamException {
             if (prices != null) {
                 for (PriceImpl price : prices) {
                     writer.writeStartElement("price");
@@ -385,9 +397,9 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
                     writer.writeEndElement();
                 }
             }
+        }
 
-            writeCond(writer, requiresSubscription, "requires_subscription");
-
+        private void writeUploader(XMLStreamWriter writer) throws XMLStreamException {
             if (uploader != null) {
                 writer.writeStartElement("uploader");
                 if (uploaderInfo != null) {
@@ -396,15 +408,15 @@ public class GoogleVideoExtensionProvider implements SitemapExtensionProvider {
                 writer.writeCharacters(uploader);
                 writer.writeEndElement();
             }
+        }
 
-            if (platformRestrictions != null) {
-                writer.writeStartElement("platform");
-                writer.writeAttribute("relationship", platformRestrictionsRel);
-                writer.writeCharacters(platformRestrictions);
+        private static void writeRestriction(XMLStreamWriter writer, String value, String rel, String tag) throws XMLStreamException {
+            if (value != null) {
+                writer.writeStartElement(tag);
+                writer.writeAttribute("relationship", rel);
+                writer.writeCharacters(value);
                 writer.writeEndElement();
             }
-
-            writeCond(writer, live, "live");
         }
     }
 }
