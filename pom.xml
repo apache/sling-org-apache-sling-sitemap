@@ -67,6 +67,7 @@
                         <!-- Obtained from https://www.google.com/ -->
                         <exclude>src/test/resources/sitemap-image-1.1.xsd</exclude>
                         <exclude>src/test/resources/sitemap-news-0.9.xsd</exclude>
+                        <exclude>src/test/resources/sitemap-video-1.1.xsd</exclude>
                     </excludes>
                 </configuration>
             </plugin>
