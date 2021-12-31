@@ -23,14 +23,17 @@ import org.apache.sling.sitemap.spi.builder.AbstractExtension;
 import org.apache.sling.sitemap.spi.builder.SitemapExtensionProvider;
 import org.jetbrains.annotations.NotNull;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Component(
@@ -42,6 +45,9 @@ import java.util.stream.Collectors;
         }
 )
 public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GoogleNewsExtensionProvider.class);
+    private static final Pattern STOCK_TICKER_PATTERN = Pattern.compile("\\w+:\\w+");
 
     @Override
     public AbstractExtension newInstance() {
@@ -61,15 +67,14 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleNewsExtension setPublicationName(@NotNull String name) {
+        public GoogleNewsExtension setPublication(@NotNull String name, @NotNull Locale locale) {
             this.publicationName = name;
-            return this;
-        }
-
-        @Override
-        @NotNull
-        public GoogleNewsExtension setPublicationLanguage(@NotNull Locale locale) {
-            this.publicationLanguage = locale.toLanguageTag().toLowerCase(Locale.ROOT);
+            String languageTag = locale.toLanguageTag().toLowerCase(Locale.ROOT);
+            if (languageTag.equals("zh-cn") || languageTag.equals("zh-tw")) {
+                this.publicationLanguage = languageTag;
+            } else {
+                this.publicationLanguage = locale.getLanguage().toLowerCase(Locale.ROOT);
+            }
             return this;
         }
 
@@ -103,17 +108,17 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleNewsExtension setGenres(Genre... genres) {
-            this.genres = genres.length > 0
-                    ? Arrays.stream(genres).map(Genre::getValue).collect(Collectors.joining(","))
+        public GoogleNewsExtension setGenres(Collection<Genre> genres) {
+            this.genres = genres != null && genres.size() > 0
+                    ? genres.stream().map(Genre::getValue).collect(Collectors.joining(","))
                     : null;
             return this;
         }
 
         @Override
         @NotNull
-        public GoogleNewsExtension setKeywords(String... keywords) {
-            this.keywords = keywords.length > 0
+        public GoogleNewsExtension setKeywords(Collection<String> keywords) {
+            this.keywords = keywords != null && keywords.size() > 0
                     ? String.join(",", keywords)
                     : null;
             return this;
@@ -121,10 +126,18 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
 
         @Override
         @NotNull
-        public GoogleNewsExtension setStockTickers(String... stockTickers) {
-            this.stockTickers = stockTickers.length > 0
-                    ? String.join(",", stockTickers)
-                    : null;
+        public GoogleNewsExtension setStockTickers(Collection<String> stockTickers) {
+            if (stockTickers != null) {
+                if (stockTickers.size() > 5) {
+                    LOG.warn("Adjusting stock tickers as they are out of bounds (0,5): {}", stockTickers.size());
+                }
+                this.stockTickers = stockTickers.stream()
+                        .filter(stockTicker -> STOCK_TICKER_PATTERN.matcher(stockTicker).matches())
+                        .limit(5)
+                        .collect(Collectors.joining(","));
+            } else {
+                this.stockTickers = null;
+            }
             return this;
         }
 
@@ -132,7 +145,7 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
         public void writeTo(@NotNull XMLStreamWriter writer) throws XMLStreamException {
             writer.writeStartElement("publication");
             writer.writeStartElement("name");
-            writer.writeCharacters(required(publicationName,"publication name missing"));
+            writer.writeCharacters(required(publicationName, "publication name missing"));
             writer.writeEndElement();
             writer.writeStartElement("language");
             writer.writeCharacters(required(publicationLanguage, "publication language missing"));
@@ -156,7 +169,7 @@ public class GoogleNewsExtensionProvider implements SitemapExtensionProvider {
             writer.writeEndElement();
 
             writer.writeStartElement("title");
-            writer.writeCharacters(required(title,"title missing"));
+            writer.writeCharacters(required(title, "title missing"));
             writer.writeEndElement();
 
             if (keywords != null) {

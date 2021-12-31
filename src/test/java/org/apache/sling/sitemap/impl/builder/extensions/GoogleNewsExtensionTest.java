@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 
 @ExtendWith({SlingContextExtension.class})
@@ -57,28 +59,30 @@ class GoogleNewsExtensionTest extends AbstractBuilderTest {
         // when
         Url url = sitemap.addUrl("http://example.ch/de.html");
         url.addExtension(GoogleNewsExtension.class)
-                .setPublicationName("News 1")
-                .setPublicationLanguage(Locale.ENGLISH)
+                .setPublication("News 1", Locale.ENGLISH)
                 .setPublicationDate(LocalDate.parse("2021-12-30"))
                 .setTitle("News Title 1");
         url.addExtension(GoogleNewsExtension.class)
-                .setPublicationName("News 2")
-                .setPublicationLanguage(Locale.GERMAN)
+                .setPublication("News 2", Locale.GERMAN)
                 .setPublicationDate(OffsetDateTime.parse("2021-12-30T12:34:56.000+01:00"))
                 .setTitle("News Title 2")
                 .setAccessRestriction(null)
-                .setGenres()
-                .setKeywords()
-                .setStockTickers();
+                .setGenres(null)
+                .setKeywords(null)
+                .setStockTickers(null);
         url.addExtension(GoogleNewsExtension.class)
-                .setPublicationName("News 3")
-                .setPublicationLanguage(new Locale("zh", "tw"))
+                .setPublication("News 3", new Locale("zh", "tw"))
                 .setPublicationDate(OffsetDateTime.parse("2021-12-30T12:34:56.000+02:00"))
                 .setTitle("News Title 3")
-                .setGenres(GoogleNewsExtension.Genre.PRESS_RELEASE, GoogleNewsExtension.Genre.SATIRE)
+                .setGenres(Arrays.asList(GoogleNewsExtension.Genre.PRESS_RELEASE, GoogleNewsExtension.Genre.SATIRE))
                 .setAccessRestriction(GoogleNewsExtension.AccessRestriction.SUBSCRIPTION)
-                .setKeywords("foo", "bar")
-                .setStockTickers("NASDAQ:FOO");
+                .setKeywords(Arrays.asList("foo", "bar"))
+                .setStockTickers(Collections.singletonList("NASDAQ:FOO"));
+        url.addExtension(GoogleNewsExtension.class)
+                .setPublication("News 4", new Locale("zh", "cn"))
+                .setPublicationDate(OffsetDateTime.parse("2021-12-30T12:34:56.000+02:00"))
+                .setTitle("News Title 4")
+                .setStockTickers(Arrays.asList("NASDAQ:A", "NASDAQ:B", "NASDAQ:C", "NASDAQ:D", "NASDAQ:E", "NASDAQ:F"));
         sitemap.close();
 
         // then
@@ -88,6 +92,7 @@ class GoogleNewsExtensionTest extends AbstractBuilderTest {
                         "xmlns:news=\"http://www.google.com/schemas/sitemap-news/0.9\">"
                         + "<url>"
                         + "<loc>http://example.ch/de.html</loc>"
+
                         + "<news:news>"
                         + "<news:publication>"
                         + "<news:name>News 1</news:name>"
@@ -96,6 +101,7 @@ class GoogleNewsExtensionTest extends AbstractBuilderTest {
                         + "<news:publication_date>2021-12-30</news:publication_date>"
                         + "<news:title>News Title 1</news:title>"
                         + "</news:news>"
+
                         + "<news:news>"
                         + "<news:publication>"
                         + "<news:name>News 2</news:name>"
@@ -104,6 +110,7 @@ class GoogleNewsExtensionTest extends AbstractBuilderTest {
                         + "<news:publication_date>2021-12-30T12:34:56+01:00</news:publication_date>"
                         + "<news:title>News Title 2</news:title>"
                         + "</news:news>"
+
                         + "<news:news>"
                         + "<news:publication>"
                         + "<news:name>News 3</news:name>"
@@ -116,6 +123,17 @@ class GoogleNewsExtensionTest extends AbstractBuilderTest {
                         + "<news:keywords>foo,bar</news:keywords>"
                         + "<news:stock_tickers>NASDAQ:FOO</news:stock_tickers>"
                         + "</news:news>"
+
+                        + "<news:news>"
+                        + "<news:publication>"
+                        + "<news:name>News 4</news:name>"
+                        + "<news:language>zh-cn</news:language>"
+                        + "</news:publication>"
+                        + "<news:publication_date>2021-12-30T12:34:56+02:00</news:publication_date>"
+                        + "<news:title>News Title 4</news:title>"
+                        + "<news:stock_tickers>NASDAQ:A,NASDAQ:B,NASDAQ:C,NASDAQ:D,NASDAQ:E</news:stock_tickers>"
+                        + "</news:news>"
+
                         + "</url>"
                         + "</urlset>",
                 writer.toString()
@@ -132,13 +150,7 @@ class GoogleNewsExtensionTest extends AbstractBuilderTest {
         Url url = sitemap.addUrl("http://example.ch/de.html");
         url.addExtension(GoogleNewsExtension.class);
         url.addExtension(GoogleNewsExtension.class)
-                .setPublicationName("name");
-        url.addExtension(GoogleNewsExtension.class)
-                .setPublicationName("name")
-                .setPublicationLanguage(Locale.ENGLISH);
-        url.addExtension(GoogleNewsExtension.class)
-                .setPublicationName("name")
-                .setPublicationLanguage(Locale.ENGLISH)
+                .setPublication("name", Locale.ENGLISH)
                 .setPublicationDate(LocalDate.now());
         sitemap.close();
 

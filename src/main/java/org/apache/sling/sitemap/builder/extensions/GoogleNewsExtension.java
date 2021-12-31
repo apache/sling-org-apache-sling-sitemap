@@ -24,6 +24,7 @@ import org.osgi.annotation.versioning.ProviderType;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -69,10 +70,7 @@ public interface GoogleNewsExtension extends Extension {
     }
 
     @NotNull
-    GoogleNewsExtension setPublicationName(@NotNull String name);
-
-    @NotNull
-    GoogleNewsExtension setPublicationLanguage(@NotNull Locale locale);
+    GoogleNewsExtension setPublication(@NotNull String name, @NotNull Locale locale);
 
     @NotNull
     GoogleNewsExtension setPublicationDate(@NotNull OffsetDateTime date);
@@ -87,11 +85,11 @@ public interface GoogleNewsExtension extends Extension {
     GoogleNewsExtension setAccessRestriction(AccessRestriction accessRestriction);
 
     @NotNull
-    GoogleNewsExtension setGenres(Genre... genres);
+    GoogleNewsExtension setGenres(Collection<Genre> genres);
 
     @NotNull
-    GoogleNewsExtension setKeywords(String... keywords);
+    GoogleNewsExtension setKeywords(Collection<String> keywords);
 
     @NotNull
-    GoogleNewsExtension setStockTickers(String ...stockTickers);
+    GoogleNewsExtension setStockTickers(Collection<String> stockTickers);
 }
