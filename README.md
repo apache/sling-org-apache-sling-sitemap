@@ -15,10 +15,6 @@ background to even sites that collect 3rd party data to include dynamically rend
 * Support for nested sitemaps, that are automatically collected into a sitemap indexes
 * Support for auto-balancing sitemaps into multiple files for background generation
 
-## Open Topics
-
-* Implement Google specific sitemap extensions (image/video/news)
-
 ## Getting Started
 
 The Sling Sitemap module is rather abstract, as it highly depends on the content structure of the application it is 
