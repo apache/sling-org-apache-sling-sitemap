@@ -38,7 +38,7 @@ import java.util.*;
                         name = "providers",
                         bind = "bindExtensionProvider",
                         unbind = "unbindExtensionProvider",
-                        cardinality = ReferenceCardinality.OPTIONAL,
+                        cardinality = ReferenceCardinality.MULTIPLE,
                         policyOption = ReferencePolicyOption.GREEDY
                 )
         })
@@ -93,7 +93,7 @@ public class ExtensionProviderManager {
     public ExtensionFactory getExtensionFactory(Class<? extends Extension> extensionInterface) {
         for (Holder holder : providers.values()) {
             if (holder.extensionInterface.equals(extensionInterface.getName())) {
-                // get the right prefix for the namespace. this may be different then the holder's prefix as there may
+                // get the right prefix for the namespace. this may be different from the holder's prefix as there may
                 // be many providers for one namespace defining different prefixes. the one with the highest service
                 // ranking wins.
                 return new ExtensionFactory(holder.getProvider(), holder.namespace,
