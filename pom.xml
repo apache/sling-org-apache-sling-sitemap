@@ -27,7 +27,7 @@
     </parent>
 
     <artifactId>org.apache.sling.sitemap</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7-SNAPSHOT</version>
     <name>Apache Sling Sitemap</name>
     <description>An Apache Sling extension to generate xml sitemaps</description>
 
@@ -35,13 +35,13 @@
         <connection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-sitemap.git</connection>
         <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/sling-org-apache-sling-sitemap.git</developerConnection>
         <url>https://gitbox.apache.org/repos/asf?p=sling-org-apache-sling-sitemap.git</url>
-        <tag>org.apache.sling.sitemap-1.0.6</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- necessary for reproducible builds, automatically updated with each release -->
-        <project.build.outputTimestamp>2022-01-26T12:23:17Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-01-26T12:23:38Z</project.build.outputTimestamp>
     </properties>
 
     <build>
