@@ -122,7 +122,7 @@ public class ExtensionProviderManager {
             localName = Objects
                     .requireNonNull((String) ref.getProperty(SitemapExtensionProvider.PROPERTY_LOCAL_NAME), "local name missing");
             extensionInterface = Objects
-                    .requireNonNull((String) ref.getProperty(SitemapExtensionProvider.PROPERTY_INTERFACE), "prefix missing");
+                    .requireNonNull((String) ref.getProperty(SitemapExtensionProvider.PROPERTY_INTERFACE), "interface missing");
 
             Object emptyTagProp = ref.getProperty(SitemapExtensionProvider.PROPERTY_EMPTY_TAG);
 
