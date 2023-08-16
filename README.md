@@ -20,23 +20,23 @@ background to even sites that collect 3rd party data to include dynamically rend
 The Sling Sitemap module is rather abstract, as it highly depends on the content structure of the application it is 
 used in. To get started a few things must be done:
 
-1) Implement at least one `SitemapGenerator`. The abstract `ResourceTreeSitemapGenator` may be a good starting
-   point, for any generator walking the resource tree. 
-2) Configure the `SitemapServlet` to register for the resource type(s) which may be a sitemap root resource.
-3) Configure a service user mapping for `org.apache.sling.sitemap:sitemap-reader` granting read access to the content
+1) Implement at least one `SitemapGenerator`. The abstract `ResourceTreeSitemapGenerator` may be a good starting
+   point for any generator walking the resource tree.
+2) Configure the `SitemapServlet` to register the resource type(s) which may be a sitemap root resource.
+3) Configure a service user mapping for `org.apache.sling.sitemap:sitemap-reader` granting read access to the content.
 4) Configure another service user mapping one for `org.apache.sling.sitemap:sitemap-writer` granting read access to the 
-   content and write access to the storage path for background generation (per default /var/sitemaps)
+   content and write access to the storage path for background generation (per default /var/sitemaps).
 5) Finally, either configure a `SitemapScheduler` to create a job for background generation, or implement the 
    `SitemapGenerator` to serve the sitemaps on-demand.
-   
+
 ## Implementation Details
 
 ### Content Model
 
-In order to serve a sitemap, a resource must be marked as sitemap root resource. This is done by adding
-a `sling:sitemapRoot = true` property either to the resource, or it's `jcr:content` child.
+In order to serve a sitemap a resource must be marked as sitemap root resource. This is done by adding
+a `sling:sitemapRoot = true` property either to the resource or its `jcr:content` child.
 
-When multiple resources in a resource tree are marked as as sitemap roots, the on closest to the repository root is
+When multiple resources in a resource tree are marked as sitemap roots, the one closest to the repository root is
 considered to top level sitemap root and serves a sitemap-index additionally to the sitemap.
 
 ```
@@ -69,8 +69,8 @@ The module does not ship a specific `SitemapGenerator` implementation. Products/
 module must implement an appropriate `SitemapGenerator` that fits their content model. An abstract
 `ResourcceTreeSitemapGenator` implementation is available to cover the most common use cases.
 
-Each `SitemapGenerator` may produce multiple sitemaps for a given sitemap root. For example a default sitemap and a news
-specific sitemap, that contains only up to 1000 urls that were changed in the past 2 days. Or as another example, 
+Each `SitemapGenerator` may produce multiple sitemaps for a given sitemap root. For example, a default sitemap and a news
+specific sitemap that contains only up to 1000 urls that were changed in the past 2 days. Or as another example, 
 consider an eCommerce site, that generates a product sitemap for each top level category of a catalog. To enable that, 
 a `SitemapGenerator` can return _0..n_ names for a given resource, each name representing a single sitemap at the given 
 resource.
@@ -92,15 +92,15 @@ For each sitemap root in the repository and for each sitemap name returned for t
 calls the corresponding `SitemapGeneator`. It is recommended to create an unordered queue for those jobs so that they
 can be distributed across multiple instances within a cluster.
 
-The `SitemapGeneratorExecutor` provides an execution context to the `SitemapGenerator`, that it may use to keep track on
-the progress. The implementation on the other hand will persist this state along with the already written sitemap after
+The `SitemapGeneratorExecutor` provides an execution context to the `SitemapGenerator` which it may use to keep track of
+progress. The implementation on the other hand will persist this state along with the already written sitemap after
 a configurable amount of urls has been added. This allows to resume jobs after an instance gets restarted or discarded
 in a dynamic cluster. Per default the `SitemapGeneratorExecutor` is configured with a chunk size of `Integer.MAX_VALUE`,
 which effectively means that no checkpoints will be written. When using this feature make sure to find a good balance
 between write overhead and performance gain for those particular cases.
 
 Background generation supports auto-balancing according to configurable limits for size (in bytes), and the number of
-urls in a single sitemap file. This is transparently handled by the `SitemapGeneatorExecutor`, providing a `Sitemap`
+urls in a single sitemap file. This is transparently handled by the `SitemapGeneratorExecutor`, providing a `Sitemap`
 instance which pipes added urls to multiple files when needed. As a consequence returning sitemap files from storage for
 a given name and sitemap root may result in multiple return values.
 
@@ -108,12 +108,12 @@ a given name and sitemap root may result in multiple return values.
 
 For smaller sites, calculating sitemaps in the background may not be necessary and serving sitemaps when they get
 requested may even result in higher accuracy. On the other hand serving a sitemap on-demand within the timeout of
-different crawlers highly depends on the amount of content and the `SitemapGeneator` implementation(s) used. Because of
+different crawlers highly depends on the amount of content and the `SitemapGenerator` implementation(s) used. Because of
 that, serving sitemaps on-demand must be explicitly enabled.
 
 To enable serving sitemaps on-demand, a `SitemapGenerator` must indicate that a particular sitemap name should be served
-on demand. Alternatively the `SitemapGeneatorManagerImpl` can be configured to force all sitemaps to be served
-on-demand. In both cases, the `SitemapServlet` changes its behaviour slightly:
+on demand. Alternatively the `SitemapGeneratorManagerImpl` can be configured to force all sitemaps to be served
+on-demand. In both cases the `SitemapServlet` changes its behaviour slightly:
 
 - When serving a sitemap-index, it queries for all sitemap roots and adds the sitemaps of those, that should be served
   on-demand. Additionally, all sitemaps form the top level sitemap root's storage location are added if not already
@@ -138,8 +138,7 @@ In order to hide the implementation detail from the consumer API, the `Extension
 * Make sure to register the `ExtensionProvider` with the `extension.interface` set to the fqn of the extension interface
 
 An example extension implementation can be found with
-the [AlternateLanguageExtension](src/main/java/org/apache/sling/sitemap/builder/extensions/AlternateLanguageExtension.java)
-.
+the [AlternateLanguageExtension](src/main/java/org/apache/sling/sitemap/builder/extensions/AlternateLanguageExtension.java).
 
 For the following implemented extensions, refer to the respective interfaces in [o.a.s.sitemap.builder.extensions](src/main/java/org/apache/sling/sitemap/builder/extensions):
 * [Alternate Language Links](https://developers.google.com/search/docs/advanced/crawling/localized-versions#sitemap)
