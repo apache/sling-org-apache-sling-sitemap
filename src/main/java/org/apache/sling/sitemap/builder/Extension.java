@@ -18,7 +18,7 @@
  */
 package org.apache.sling.sitemap.builder;
 
-import org.osgi.annotation.versioning.ProviderType;
+import org.osgi.annotation.versioning.ConsumerType;
 
 /**
  * A marker interface used as consumer facing API for custom extensions.
@@ -26,6 +26,6 @@ import org.osgi.annotation.versioning.ProviderType;
  * Implementations must extend this interface to provide a sub type of it that can be added to a {@link Url} using
  * {@link Url#addExtension(Class)}.
  */
-@ProviderType
+@ConsumerType
 public interface Extension {
 }
