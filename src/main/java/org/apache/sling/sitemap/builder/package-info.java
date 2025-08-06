@@ -20,7 +20,7 @@
 /**
  * This package provide a builder-like API to create XML sitemaps.
  */
-@Version("1.0.0")
+@Version("1.1.0")
 package org.apache.sling.sitemap.builder;
 
 import org.osgi.annotation.versioning.Version;
